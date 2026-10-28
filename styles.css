@@ -150,6 +150,7 @@ img { height: auto; }
 .facts b { color: var(--ink); font-weight: 600; }
 .hero-visual { position: relative; }
 .hero-art { display: block; width: 100%; height: auto; }
+.hero-art-m { display: none; }
 .hero-note { position: absolute; left: 6%; bottom: 2%; display: flex; align-items: center; gap: 1rem; padding: .8rem 1.1rem; background: var(--white); border: 1px solid var(--rule); max-width: 300px; }
 .hero-note .num { font-family: var(--display); font-size: 2.4rem; line-height: 1; color: var(--navy); }
 .hero-note p { margin: 0; font-size: .86rem; line-height: 1.4; color: var(--ink-2); border-left: 1px solid var(--gold); padding-left: 1rem; }
@@ -530,9 +531,13 @@ dialog .close:hover { border-color: var(--ink); }
   .lines li { grid-template-columns: 4.6rem minmax(0, 1fr) auto; }
   .brand img { height: 42px; }
   .foot .brand img { height: 52px; }
-  .facts { flex-direction: column; gap: .5rem; }
-  .facts li + li::before { display: none; }
-  .hero-note { position: static; margin-top: 1rem; max-width: none; }
+  .facts { gap: .45rem .85rem; margin-top: 1.5rem; font-size: .88rem; }
+  .facts li { gap: .85rem; }
+  .hero .wrap { gap: 1.25rem; padding-top: 1rem; }
+  .hero-visual { order: -1; max-width: none; margin-left: calc(-1 * var(--gutter-l)); margin-right: calc(-1 * var(--gutter-r)); }
+  .hero-art, .hero-note { display: none; }
+  .hero-art-m { display: block; width: 100%; height: auto; }
+  .hero h1 { margin-top: .75rem; }
   .utility .wrap { justify-content: center; text-align: center; }
   .utility .loc { display: none; }
   .steps li { grid-template-columns: 2.6rem minmax(0, 1fr); }
