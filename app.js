@@ -188,7 +188,7 @@
         const cls = n <= 5 ? 'soon' : 'ok';
         const state = n === 0 ? 'Due today' : n <= 5 ? `Due in ${n} day${n === 1 ? '' : 's'}` : `In ${n} days`;
         const prev = dueFor(x.r.rule, x.d.getFullYear(), x.d.getMonth() - 1);
-        return `<div class="${cls}"><span class="state">${esc(state)}</span><strong>${esc(x.r.label)} for ${esc(x.covers)}</strong><span>Due ${esc(fmt(x.d))}. The previous one was due ${esc(fmt(prev))}; late filings attract penalties and interest.</span></div>`;
+        return `<div class="${cls}"><div class="days"><b>${n}</b><span>${n === 1 ? 'day' : 'days'}</span></div><span class="state">${esc(state)}</span><strong>${esc(x.r.label)} for ${esc(x.covers)}</strong><span>Due ${esc(fmt(x.d))}. The previous one was due ${esc(fmt(prev))}; late filings attract penalties and interest.</span></div>`;
       }).join('');
       const ahl = C.deadlines.monthly.find(r => r.id === 'ahl');
       const ahlNext = ahl ? nextDue(ahl.rule, today) : null;
@@ -228,7 +228,7 @@
       $('#p-title').textContent = f.title;
       $('#p-do').innerHTML = f.steps.map(s => `<li>${esc(s)}</li>`).join('');
       $('#p-first').textContent = f.first;
-      $('#p-know').textContent = f.know;
+      $('#p-know').textContent = f.know; $('#p-know').classList.add('know');
       $('#p-wa').href = waLink(f.wa);
       $('#p-form').href = 'contact.html#need-' + f.id;
       $('#p-tools').innerHTML = f.tools.map(t => `<li><a href="${esc(t.href)}">${esc(t.label)}</a></li>`).join('');
@@ -244,8 +244,8 @@
     if (need) scrollTo($('#start'));
     window.addEventListener('hashchange', () => { const m = hashOf().match(/^need-(.+)$/); if (m && finderById[m[1]]) selectFinder(m[1], true); });
 
-    $('#svc-mini').innerHTML = C.services.map(s => `
-      <li><a href="services.html#service-${esc(s.id)}"><span><b>${esc(s.title)}</b><span>${esc(s.promise)}</span></span>${icon('arrow')}</a></li>`).join('');
+    $('#svc-mini').innerHTML = C.services.map((s, i) => `
+      <li><a href="services.html#service-${esc(s.id)}"><span class="num">${String(i + 1).padStart(2, '0')}</span><span><b>${esc(s.title)}</b><span>${esc(s.promise)}</span></span>${icon('arrow')}</a></li>`).join('');
     $('#calc-links').innerHTML = (C.calculators || []).map(c => `<li><a href="tools.html#tool-${esc(c.id)}">${esc(c.title)}</a></li>`).join('');
     $('#check-links').innerHTML = C.checklists.map(c => `<li><a href="tools.html#check-${esc(c.id)}">${esc(c.title)}</a></li>`).join('');
     $('#home-qa-search').addEventListener('submit', e => { e.preventDefault(); const q = $('#home-qa-q').value.trim(); location.href = q ? 'answers.html#find-' + encodeURIComponent(q) : 'answers.html'; });
@@ -258,16 +258,18 @@
   /* ---------- services page ---------- */
   if (page === 'services') {
     $('#svc-jump').innerHTML = C.services.map(s => `<a href="#service-${esc(s.id)}">${esc(s.shortTitle)}</a>`).join('');
-    $('#svc-blocks').innerHTML = C.services.map(s => `
+    const tags = a => a.replace(/\.$/, '').split(/,\s*|\s+and\s+/).map(t => t.trim()).filter(Boolean).map(t => t.charAt(0).toUpperCase() + t.slice(1));
+    $('#svc-blocks').innerHTML = C.services.map((s, i) => `
       <article class="service-block" id="service-${esc(s.id)}">
         <div class="pic">${pictureFor(s.image, s.imageAlt, s.imageRatio, '(max-width: 980px) 100vw, 420px')}</div>
         <div class="body">
+          <span class="num">${String(i + 1).padStart(2, '0')} / 08</span>
           <h2>${esc(s.title)}</h2>
           <p class="promise">${esc(s.promise)}</p>
           <p>${esc(s.description)}</p>
           <h3>How we can support you</h3>
           <ul class="dlg-list">${s.bullets.map(b => `<li>${esc(b)}</li>`).join('')}</ul>
-          <p class="for"><b>For:</b> ${esc(s.audience)}</p>
+          <p class="for"><b>For</b> ${(s.tags || tags(s.audience)).map(t => `<span>${esc(t)}</span>`).join('')}</p>
           <div class="dlg-outcome"><b>What you end up with:</b> ${esc(s.outcome)}</div>
           <div class="dlg-acts">
             <button class="btn btn-primary" type="button" data-need="${esc(s.need)}">Discuss this service</button>
@@ -356,19 +358,37 @@
     /* checklists */
     $('#check-tabs').innerHTML = C.checklists.map((c, i) => `<button class="tab" role="tab" data-check="${esc(c.id)}" aria-selected="${i === 0 ? 'true' : 'false'}">${esc(c.title)}</button>`).join('');
     let currentCheck = C.checklists[0].id;
+    const ticksKey = id => 'qx-check-' + id;
+    const loadTicks = id => { try { return JSON.parse(localStorage.getItem(ticksKey(id)) || '[]'); } catch (e) { return []; } };
+    const saveTicks = (id, arr) => { try { localStorage.setItem(ticksKey(id), JSON.stringify(arr)); } catch (e) { /* private mode: ticks last for the visit only */ } };
+    let ticks = [];
+    function paintProgress() {
+      const c = checkById[currentCheck], done = ticks.filter(Boolean).length, total = c.items.length;
+      $('#check-progress').innerHTML = `<span><b>${done} of ${total}</b> ready${done === total ? '. Everything is in hand; send it over.' : done ? '. Tap an item to tick it off as you find it.' : '. Tap each item as you find it; your ticks are remembered on this device.'}</span><span class="bar"><i style="width:${total ? Math.round(done / total * 100) : 0}%"></i></span>`;
+    }
     function showCheck(id) {
       const c = checkById[id]; if (!c) return false;
       currentCheck = id;
+      ticks = loadTicks(id);
       $$('#check-tabs .tab').forEach(t => t.setAttribute('aria-selected', t.getAttribute('data-check') === id ? 'true' : 'false'));
       $('#check-title').textContent = c.title;
       $('#check-intro').textContent = c.intro;
-      $('#check-list').innerHTML = c.items.map(i => `<li>${esc(i)}</li>`).join('');
+      $('#check-list').innerHTML = c.items.map((it, i) => `<li class="${ticks[i] ? 'done' : ''}" role="checkbox" aria-checked="${ticks[i] ? 'true' : 'false'}" tabindex="0" data-i="${i}"><span class="box">${icon('check')}</span><span class="txt"><span class="n">${i + 1}.</span>${esc(it)}</span></li>`).join('');
       $('#check-status').textContent = '';
       $('#check-wa').href = waLink(`I am gathering documents for: ${c.title.toLowerCase()}. Here is what I have so far:`);
+      paintProgress();
       return true;
     }
+    function toggleTick(li) {
+      const i = Number(li.dataset.i); ticks[i] = !ticks[i];
+      li.classList.toggle('done', !!ticks[i]); li.setAttribute('aria-checked', ticks[i] ? 'true' : 'false');
+      saveTicks(currentCheck, ticks); paintProgress();
+    }
+    $('#check-list').addEventListener('click', e => { const li = e.target.closest('li[data-i]'); if (li) toggleTick(li); });
+    $('#check-list').addEventListener('keydown', e => { const li = e.target.closest('li[data-i]'); if (li && (e.key === ' ' || e.key === 'Enter')) { e.preventDefault(); toggleTick(li); } });
+    $('#check-reset').addEventListener('click', () => { ticks = []; saveTicks(currentCheck, ticks); showCheck(currentCheck); });
     $$('#check-tabs .tab').forEach(t => t.addEventListener('click', () => showCheck(t.getAttribute('data-check'))));
-    const checkText = () => { const c = checkById[currentCheck]; return `${c.title} — what to have ready (${cfg.firm})\n` + c.items.map((it, i) => `${i + 1}. ${it}`).join('\n'); };
+    const checkText = () => { const c = checkById[currentCheck]; return `${c.title} — what to have ready (${cfg.firm})\n` + c.items.map((it, i) => `${ticks[i] ? '[x]' : '[ ]'} ${i + 1}. ${it}`).join('\n'); };
     $('#check-copy').addEventListener('click', e => copyText(checkText(), e.currentTarget, 'Copied', $('#check-status')));
     showCheck(currentCheck);
 
@@ -386,7 +406,7 @@
     const CATS = [['all', 'All'], ['tax', 'Tax'], ['payroll', 'Payroll'], ['audit', 'Audit'], ['company', 'Company'], ['ngo', 'NGOs and SACCOs'], ['firm', 'Working with us']];
     const catLabel = { tax: 'Tax', payroll: 'Payroll', audit: 'Audit', company: 'Company', ngo: 'NGOs', firm: 'The firm' };
     $('#qa-chips').innerHTML = CATS.map(([id, l], i) => `<button class="chip" type="button" data-cat="${id}" aria-pressed="${i === 0 ? 'true' : 'false'}">${esc(l)}</button>`).join('');
-    $('#qa').innerHTML = C.faqs.map((f, i) => `<details id="q-${i}" data-cat="${esc(f.cat)}"><summary><span class="tag">${esc(catLabel[f.cat] || '')}</span>${esc(f.q)}</summary><p>${esc(f.a)}</p></details>`).join('') + '<div class="qa-empty" id="qa-empty" hidden>Nothing matches that yet. Ask us directly and we will answer.</div>';
+    $('#qa').innerHTML = C.faqs.map((f, i) => `<details id="q-${i}" data-cat="${esc(f.cat)}"><summary><span class="tag">${esc(catLabel[f.cat] || '')}</span>${esc(f.q)}</summary><p>${esc(f.a)}</p><a class="ask" href="${waLink('About "' + f.q + '": ')}" target="_blank" rel="noopener">${icon('chat')}Ask us about your own case</a></details>`).join('') + '<div class="qa-empty" id="qa-empty" hidden>Nothing matches that yet. Ask us directly and we will answer.</div>';
     let qaCat = 'all';
     function filterQa() {
       const q = $('#qa-search').value.trim().toLowerCase();
@@ -440,7 +460,8 @@
       </div>`, trigger, 'person-' + id);
   }
   if (page === 'about') {
-    $('#why').innerHTML = C.whyUs.map(w => `<li><h3>${esc(w.title)}</h3><p>${esc(w.text)}</p></li>`).join('');
+    const whyIcons = ['briefcase', 'pin', 'shield', 'doc', 'calc', 'lock'];
+    $('#why').innerHTML = C.whyUs.map((w, i) => `<li><span class="w-icon">${icon(whyIcons[i % whyIcons.length])}</span><h3>${esc(w.title)}</h3><p>${esc(w.text)}</p></li>`).join('');
     $('#tech').innerHTML = C.technology.map(t => `<li><b>${esc(t.title)}</b><span>${esc(t.text)}</span></li>`).join('') + `<li class="software">${C.software.map(s => `<span>${esc(s)}</span>`).join('')}</li>`;
     $('#values-btn').addEventListener('click', e => openDialog(`
       <div class="dlg-body dlg-plain">
@@ -545,5 +566,33 @@
     function routeContact() { const m = hashOf().match(/^need-(.+)$/); if (m && $$('option', needSel).some(o => o.value === m[1])) { needSel.value = m[1]; scrollTo($('#enquiry')); } }
     window.addEventListener('hashchange', routeContact);
     routeContact();
+  }
+  /* ---------- sub-navigation: mark the section in view ---------- */
+  const subnavLinks = $$('.subnav a[href^="#"]');
+  if (subnavLinks.length && 'IntersectionObserver' in window) {
+    const byId = new Map(subnavLinks.map(a => [a.getAttribute('href').slice(1), a]));
+    let current = null;
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(en => { if (en.isIntersecting) { const a = byId.get(en.target.id); if (a && a !== current) { if (current) current.classList.remove('active'); current = a; a.classList.add('active'); a.scrollIntoView({ block: 'nearest', inline: 'center', behavior: reduce ? 'auto' : 'smooth' }); } } });
+    }, { rootMargin: '-30% 0px -60% 0px' });
+    byId.forEach((a, id) => { const t = document.getElementById(id); if (t) io.observe(t); });
+  }
+
+  /* ---------- reveal: a short rise as card groups enter the viewport ---------- */
+  if ('IntersectionObserver' in window && !reduce) {
+    const groups = ['#tiles > li', '#svc-mini > li', '.tool-card', '.service-block', '#why > li', '#team > li', '#steps > li', '#team-mini > li', '#now > div', '.aud', '.svc'];
+    const items = [];
+    groups.forEach(sel => $$(sel).forEach((el, i) => { el.classList.add('reveal'); el.style.setProperty('--d', Math.min(i, 7) * 60 + 'ms'); items.push(el); }));
+    const io = new IntersectionObserver(entries => { entries.forEach(en => { if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); } }); }, { threshold: .08, rootMargin: '0px 0px -5% 0px' });
+    items.forEach(el => io.observe(el));
+    setTimeout(() => items.forEach(el => el.classList.add('in')), 2500); /* belt and braces: nothing stays hidden */
+  }
+
+  /* ---------- back to top ---------- */
+  const toTop = $('#to-top');
+  if (toTop) {
+    const check = () => { toTop.hidden = window.scrollY < 900; };
+    window.addEventListener('scroll', check, { passive: true }); check();
+    toTop.addEventListener('click', () => { window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' }); });
   }
 })();

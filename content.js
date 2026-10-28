@@ -46,6 +46,7 @@ window.QUARTEX_CONTENT = {
         'Internal audit on a risk-based plan, with a management letter'
       ],
       audience: 'Companies, NGOs and donor projects, SACCOs and public bodies.',
+      tags: ['Companies', 'NGOs and donor projects', 'SACCOs', 'Public bodies'],
       description: 'We examine financial information, systems and controls so that the people who rely on your reporting can trust it. From statutory audits to targeted investigations, the work follows the applicable standards and an agreed scope, and ends with clear findings and practical recommendations rather than a list of exceptions.',
       bullets: [
         'External and statutory financial statement audits under ISA',
@@ -74,6 +75,7 @@ window.QUARTEX_CONTENT = {
         'Tax health checks, reconciliations and compliance certificates'
       ],
       audience: 'Every registered taxpayer, from sole traders and landlords to groups.',
+      tags: ['Sole traders', 'Landlords', 'SMEs', 'Companies and groups'],
       description: 'We help businesses and individuals organise their tax records, understand their obligations and deal with KRA in a structured, timely way. The work runs from return preparation and iTax support to tax health checks, planning and the correspondence that follows an audit or an assessment.',
       bullets: [
         'Corporate, individual and partnership income tax returns',
@@ -103,6 +105,7 @@ window.QUARTEX_CONTENT = {
         'Monthly management accounts; financial statements under IFRS'
       ],
       audience: 'SMEs, start-ups, NGOs, SACCOs and anyone whose books have fallen behind.',
+      tags: ['SMEs', 'Start-ups', 'NGOs', 'SACCOs', 'Books in arrears'],
       description: 'We keep dependable books of account, prepare reports that management can read and connect everyday accounting with the decisions it should inform: cash flow, budgets, working capital and payroll. Where records have fallen behind, we rebuild them from bank and M-Pesa statements and bring the filings up to date.',
       bullets: [
         'Bookkeeping, general ledger, journals, trial balances and reconciliations',
@@ -131,6 +134,7 @@ window.QUARTEX_CONTENT = {
         'Company secretarial and business registration support'
       ],
       audience: 'Boards, company secretaries and regulated entities.',
+      tags: ['Boards', 'Company secretaries', 'Regulated entities'],
       description: 'We review governance arrangements, clarify who is responsible for what and put reliable processes behind your statutory, regulatory and internal obligations. Policies, records and oversight practices are assessed together, and the recommendations are written for the people who will use them.',
       bullets: [
         'Corporate governance reviews, frameworks and board advisory',
@@ -157,6 +161,7 @@ window.QUARTEX_CONTENT = {
         'Fraud prevention, business continuity and crisis plans'
       ],
       audience: 'Management, boards and audit committees.',
+      tags: ['Management', 'Boards', 'Audit committees'],
       description: 'We help organisations identify the risks that matter, assess the controls around them and decide where to strengthen. The work brings structure to risk ownership, monitoring and response, proportionate to your objectives and resources, and looks at the causes behind a control weakness rather than the symptom.',
       bullets: [
         'Enterprise risk management frameworks and risk registers',
@@ -183,6 +188,7 @@ window.QUARTEX_CONTENT = {
         'Turnaround, cost reduction and restructuring'
       ],
       audience: 'Owners and boards weighing an investment, a loan, an expansion or a turnaround.',
+      tags: ['Owners', 'Boards', 'Borrowers and investors'],
       description: 'We turn financial and operational information into analysis you can decide on. Whether you are reviewing performance, weighing an investment or considering a change of direction, we test the assumptions, set out the financial implications and name the risks, so the decision is disciplined and defensible.',
       bullets: [
         'Business diagnostics and strategic planning',
@@ -209,6 +215,7 @@ window.QUARTEX_CONTENT = {
         'Power BI dashboards, analytics and automation'
       ],
       audience: 'Organisations outgrowing spreadsheets or the software they started with.',
+      tags: ['Growing SMEs', 'Finance teams', 'Multi-entity groups'],
       description: 'We combine financial expertise with appropriate technology to modernise how your finance function works: the systems, the reporting and the workflows around them. The aim is less repetitive effort, better visibility of financial information and controls that are built into the process.',
       bullets: [
         'Accounting software selection, implementation and migration',
@@ -235,6 +242,7 @@ window.QUARTEX_CONTENT = {
         'Internal audit, controls and accounting software'
       ],
       audience: 'Finance teams, managers and boards.',
+      tags: ['Finance teams', 'Managers', 'Boards'],
       description: 'We build practical capability in the people responsible for finance, audit, tax, risk and compliance. Sessions are shaped around participants’ roles, their existing knowledge and your own procedures, so what is learned is applied the following week.',
       bullets: [
         'Internal audit, internal controls and fraud awareness',
