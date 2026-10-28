@@ -47,6 +47,7 @@ window.QUARTEX_CONTENT = {
       ],
       audience: 'Companies, NGOs and donor projects, SACCOs and public bodies.',
       tags: ['Companies', 'NGOs and donor projects', 'SACCOs', 'Public bodies'],
+      related: [{ label: 'Statutory audit checklist', href: 'tools.html#check-audit' }, { label: 'Donor audit checklist', href: 'tools.html#check-donor' }, { label: 'Does my company need an audit?', href: 'answers.html#find-need an audit' }],
       description: 'We examine financial information, systems and controls so that the people who rely on your reporting can trust it. From statutory audits to targeted investigations, the work follows the applicable standards and an agreed scope, and ends with clear findings and practical recommendations rather than a list of exceptions.',
       bullets: [
         'External and statutory financial statement audits under ISA',
@@ -76,6 +77,7 @@ window.QUARTEX_CONTENT = {
       ],
       audience: 'Every registered taxpayer, from sole traders and landlords to groups.',
       tags: ['Sole traders', 'Landlords', 'SMEs', 'Companies and groups'],
+      related: [{ label: 'Late penalty estimator', href: 'tools.html#tool-penalty' }, { label: 'VAT calculator', href: 'tools.html#tool-vat' }, { label: 'Statutory deadlines', href: 'tools.html#deadlines' }, { label: 'What is eTIMS?', href: 'answers.html#find-etims' }],
       description: 'We help businesses and individuals organise their tax records, understand their obligations and deal with KRA in a structured, timely way. The work runs from return preparation and iTax support to tax health checks, planning and the correspondence that follows an audit or an assessment.',
       bullets: [
         'Corporate, individual and partnership income tax returns',
@@ -106,6 +108,7 @@ window.QUARTEX_CONTENT = {
       ],
       audience: 'SMEs, start-ups, NGOs, SACCOs and anyone whose books have fallen behind.',
       tags: ['SMEs', 'Start-ups', 'NGOs', 'SACCOs', 'Books in arrears'],
+      related: [{ label: 'Net pay and PAYE calculator', href: 'tools.html#tool-paye' }, { label: 'Bookkeeping hand-over checklist', href: 'tools.html#check-bookkeeping' }, { label: 'Payroll deadlines', href: 'tools.html#deadlines' }],
       description: 'We keep dependable books of account, prepare reports that management can read and connect everyday accounting with the decisions it should inform: cash flow, budgets, working capital and payroll. Where records have fallen behind, we rebuild them from bank and M-Pesa statements and bring the filings up to date.',
       bullets: [
         'Bookkeeping, general ledger, journals, trial balances and reconciliations',
@@ -135,6 +138,7 @@ window.QUARTEX_CONTENT = {
       ],
       audience: 'Boards, company secretaries and regulated entities.',
       tags: ['Boards', 'Company secretaries', 'Regulated entities'],
+      related: [{ label: 'Company set-up checklist', href: 'tools.html#check-company' }, { label: 'What is an annual return?', href: 'answers.html#find-annual return' }, { label: 'Which licences does a new business need?', href: 'answers.html#find-licence' }],
       description: 'We review governance arrangements, clarify who is responsible for what and put reliable processes behind your statutory, regulatory and internal obligations. Policies, records and oversight practices are assessed together, and the recommendations are written for the people who will use them.',
       bullets: [
         'Corporate governance reviews, frameworks and board advisory',
@@ -162,6 +166,7 @@ window.QUARTEX_CONTENT = {
       ],
       audience: 'Management, boards and audit committees.',
       tags: ['Management', 'Boards', 'Audit committees'],
+      related: [{ label: 'Internal versus external audit', href: 'answers.html#find-internal' }, { label: 'What we would do first', href: 'index.html#need-controls' }],
       description: 'We help organisations identify the risks that matter, assess the controls around them and decide where to strengthen. The work brings structure to risk ownership, monitoring and response, proportionate to your objectives and resources, and looks at the causes behind a control weakness rather than the symptom.',
       bullets: [
         'Enterprise risk management frameworks and risk registers',
@@ -189,6 +194,7 @@ window.QUARTEX_CONTENT = {
       ],
       audience: 'Owners and boards weighing an investment, a loan, an expansion or a turnaround.',
       tags: ['Owners', 'Boards', 'Borrowers and investors'],
+      related: [{ label: 'How do you charge?', href: 'answers.html#find-charge' }, { label: 'How an engagement runs', href: 'about.html#process' }, { label: 'Not sure what you need?', href: 'index.html#need-unsure' }],
       description: 'We turn financial and operational information into analysis you can decide on. Whether you are reviewing performance, weighing an investment or considering a change of direction, we test the assumptions, set out the financial implications and name the risks, so the decision is disciplined and defensible.',
       bullets: [
         'Business diagnostics and strategic planning',
@@ -216,6 +222,7 @@ window.QUARTEX_CONTENT = {
       ],
       audience: 'Organisations outgrowing spreadsheets or the software they started with.',
       tags: ['Growing SMEs', 'Finance teams', 'Multi-entity groups'],
+      related: [{ label: 'Which software fits a small business?', href: 'answers.html#find-software' }, { label: 'Moving to new software: first steps', href: 'index.html#need-software' }],
       description: 'We combine financial expertise with appropriate technology to modernise how your finance function works: the systems, the reporting and the workflows around them. The aim is less repetitive effort, better visibility of financial information and controls that are built into the process.',
       bullets: [
         'Accounting software selection, implementation and migration',
@@ -243,6 +250,7 @@ window.QUARTEX_CONTENT = {
       ],
       audience: 'Finance teams, managers and boards.',
       tags: ['Finance teams', 'Managers', 'Boards'],
+      related: [{ label: 'What are the PAYE bands?', href: 'answers.html#find-bands' }, { label: 'Train my team: first steps', href: 'index.html#need-training' }],
       description: 'We build practical capability in the people responsible for finance, audit, tax, risk and compliance. Sessions are shaped around participants’ roles, their existing knowledge and your own procedures, so what is learned is applied the following week.',
       bullets: [
         'Internal audit, internal controls and fraud awareness',

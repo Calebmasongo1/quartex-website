@@ -27,9 +27,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap">
   <link rel="stylesheet" href="assets/fonts/fonts.css">
-  <link rel="stylesheet" href="styles.css?v=e7a2041e77">
-  <script defer src="content.js?v=e7a2041e77"></script>
-  <script defer src="app.js?v=e7a2041e77"></script>
+  <link rel="stylesheet" href="styles.css?v=000ddb55f3">
+  <script defer src="content.js?v=000ddb55f3"></script>
+  <script defer src="app.js?v=000ddb55f3"></script>
 
 </head>
 <body data-page="services">
@@ -117,10 +117,20 @@
     </div>
   </div>
 </section>
-<nav class="subnav" aria-label="On this page"><div class="wrap" id="svc-jump"></div></nav>
+<nav class="subnav subnav-phone" aria-label="On this page"><div class="wrap" id="svc-jump"></div></nav>
 
-<section class="section section-white" id="service-list" aria-label="Services in full">
-  <div class="wrap" id="svc-blocks"></div>
+<section class="section section-white svc-dir" id="service-list" aria-label="Services in full">
+  <div class="wrap svc-dir-grid">
+    <aside class="svc-index-wrap">
+      <span class="kicker">Practice areas</span>
+      <ol class="svc-index" id="svc-index"></ol>
+      <div class="svc-index-foot">
+        <p>Not sure which of these applies to you?</p>
+        <a class="textlink" href="index.html#start">Tell us what you need <svg class="icon"><use href="#i-arrow"/></svg></a>
+      </div>
+    </aside>
+    <div class="svc-stage" id="svc-stage" aria-live="polite"></div>
+  </div>
   <div class="wrap">
     <div class="svc-note svc-note-light">
       <p>Tax work is done on KRA's own platforms: iTax for registration, returns and compliance certificates, and eTIMS for electronic invoicing. The marks identify the platforms; they do not imply endorsement by KRA.</p>

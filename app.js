@@ -255,28 +255,60 @@
         <b>${esc(p.name)}</b><span>${esc(p.displayRole)}</span></a></li>`).join('');
   }
 
-  /* ---------- services page ---------- */
+  /* ---------- services page: a directory, one practice area at a time ---------- */
   if (page === 'services') {
-    $('#svc-jump').innerHTML = C.services.map(s => `<a href="#service-${esc(s.id)}">${esc(s.shortTitle)}</a>`).join('');
+    const n2 = i => String(i + 1).padStart(2, '0');
     const tags = a => a.replace(/\.$/, '').split(/,\s*|\s+and\s+/).map(t => t.trim()).filter(Boolean).map(t => t.charAt(0).toUpperCase() + t.slice(1));
-    $('#svc-blocks').innerHTML = C.services.map((s, i) => `
-      <article class="service-block" id="service-${esc(s.id)}">
-        <div class="pic">${pictureFor(s.image, s.imageAlt, s.imageRatio, '(max-width: 980px) 100vw, 420px')}</div>
-        <div class="body">
-          <span class="num">${String(i + 1).padStart(2, '0')} / 08</span>
-          <h2>${esc(s.title)}</h2>
-          <p class="promise">${esc(s.promise)}</p>
-          <p>${esc(s.description)}</p>
-          <h3>How we can support you</h3>
-          <ul class="dlg-list">${s.bullets.map(b => `<li>${esc(b)}</li>`).join('')}</ul>
-          <p class="for"><b>For</b> ${(s.tags || tags(s.audience)).map(t => `<span>${esc(t)}</span>`).join('')}</p>
-          <div class="dlg-outcome"><b>What you end up with:</b> ${esc(s.outcome)}</div>
-          <div class="dlg-acts">
-            <button class="btn btn-primary" type="button" data-need="${esc(s.need)}">Discuss this service</button>
-            <a class="btn btn-wa" href="${waLink('I would like to talk about ' + s.title.toLowerCase() + '.')}" target="_blank" rel="noopener">${icon('chat')}Ask on WhatsApp</a>
-          </div>
+    $('#svc-jump').innerHTML = C.services.map(s => `<a href="#service-${esc(s.id)}">${esc(s.shortTitle)}</a>`).join('');
+    $('#svc-index').innerHTML = C.services.map((s, i) => `<li><button type="button" data-svc="${esc(s.id)}" aria-current="false"><span class="n">${n2(i)}</span><span class="t">${esc(s.title)}</span>${icon('arrow')}</button></li>`).join('');
+    $('#svc-stage').innerHTML = C.services.map((s, i) => {
+      const prev = C.services[(i + C.services.length - 1) % C.services.length], next = C.services[(i + 1) % C.services.length];
+      const f = C.finder.find(x => x.id === s.need);
+      return `
+      <article class="svc-panel" id="service-${esc(s.id)}" hidden>
+        <div class="sp-media">
+          ${pictureFor(s.image, s.imageAlt, s.imageRatio, '(max-width: 980px) 100vw, 900px')}
+          <span class="sp-num">${n2(i)} <i>/ 08</i></span>
         </div>
-      </article>`).join('');
+        <div class="sp-body">
+          <div class="sp-main">
+            <h2>${esc(s.title)}</h2>
+            <p class="promise">${esc(s.promise)}</p>
+            <p class="desc">${esc(s.description)}</p>
+            <h3>How we can support you</h3>
+            <ul class="dlg-list">${s.bullets.map(x => `<li>${esc(x)}</li>`).join('')}</ul>
+          </div>
+          <aside class="sp-side">
+            <div class="sp-card"><h4>Who this is for</h4><div class="tags">${(s.tags || tags(s.audience)).map(t => `<span>${esc(t)}</span>`).join('')}</div></div>
+            <div class="sp-card peach"><h4>What you end up with</h4><p>${esc(s.outcome)}</p></div>
+            <div class="sp-card navy"><h4>Start the conversation</h4><p>${f ? esc(f.first) : 'Tell us what is going on and we will say what we would do first.'}</p><div class="sp-acts"><button class="btn btn-gold" type="button" data-need="${esc(s.need)}">Discuss this service</button><a class="btn btn-light" href="${waLink('I would like to talk about ' + s.title.toLowerCase() + '.')}" target="_blank" rel="noopener">${icon('chat')}WhatsApp</a></div></div>
+            ${s.related && s.related.length ? `<div class="sp-card"><h4>Useful on this site</h4><ul class="related">${s.related.map(r => `<li><a href="${esc(r.href)}">${esc(r.label)}</a></li>`).join('')}</ul></div>` : ''}
+          </aside>
+        </div>
+        <nav class="sp-nav" aria-label="Other practice areas">
+          <a href="#service-${esc(prev.id)}"><span>Previous</span><b>${esc(prev.shortTitle)}</b></a>
+          <a href="#service-${esc(next.id)}" class="next"><span>Next</span><b>${esc(next.shortTitle)}</b></a>
+        </nav>
+      </article>`;
+    }).join('');
+    let currentSvc = null;
+    function selectService(id, { scroll = false, push = true } = {}) {
+      if (!svcById[id]) id = C.services[0].id;
+      currentSvc = id;
+      $$('.svc-panel').forEach(p => { const on = p.id === 'service-' + id; if (on && p.hidden) { p.hidden = false; p.classList.remove('show'); void p.offsetWidth; p.classList.add('show'); } else if (!on) p.hidden = true; });
+      $$('#svc-index button').forEach(b => b.setAttribute('aria-current', b.dataset.svc === id ? 'true' : 'false'));
+      $$('#svc-jump a').forEach(a => { const on = a.getAttribute('href') === '#service-' + id; a.classList.toggle('active', on); if (on) a.scrollIntoView({ block: 'nearest', inline: 'center', behavior: reduce ? 'auto' : 'smooth' }); });
+      if (push && hashOf() !== 'service-' + id) history.replaceState(null, '', '#service-' + id);
+      if (scroll) scrollTo($('#service-list'));
+    }
+    $('#svc-index').addEventListener('click', e => { const b = e.target.closest('button[data-svc]'); if (b) selectService(b.dataset.svc, { scroll: window.innerWidth < 981 }); });
+    document.addEventListener('click', e => {
+      const a = e.target.closest('a[href^="#service-"]'); if (!a) return;
+      e.preventDefault(); selectService(a.getAttribute('href').slice(9), { scroll: true });
+    });
+    window.addEventListener('hashchange', () => { const m = hashOf().match(/^service-(.+)$/); if (m && m[1] !== currentSvc) selectService(m[1], { scroll: true, push: false }); });
+    const m0 = hashOf().match(/^service-(.+)$/);
+    selectService(m0 ? m0[1] : C.services[0].id, { scroll: !!m0, push: !!m0 });
   }
   if ($('#audiences')) {
     $('#audiences').innerHTML = C.audiences.map((a, i) => `
