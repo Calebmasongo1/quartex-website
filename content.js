@@ -394,7 +394,7 @@ window.QUARTEX_CONTENT = {
       first: 'Send us the notice. We read it and reconcile your iTax ledger before anything goes back to KRA.',
       know: 'An objection to an assessment must be lodged within 30 days of the notice, so the clock is already running.',
       service: 'taxation',
-      tools: [{ label: 'Late penalty estimator', href: '#tool-penalty' }, { label: 'What to have ready', href: '#checklists' }, { label: 'How long do I have to object?', href: '#answers' }]
+      tools: [{ label: 'Late penalty estimator', href: 'tools.html#tool-penalty' }, { label: 'How long do I have to object?', href: 'answers.html#find-object' }, { label: 'What is the 2026 amnesty?', href: 'answers.html#find-amnesty' }]
     },
     {
       id: 'audit', icon: 'shield', label: 'We need an audit', sub: 'Statutory, donor or internal',
@@ -409,7 +409,7 @@ window.QUARTEX_CONTENT = {
       first: 'Send the trial balance, bank statements and last year’s signed accounts, or the grant agreement for a donor audit. We plan from there.',
       know: 'Company returns are due within six months of year-end and the audit comes first, so plan backwards from that date.',
       service: 'audit-assurance',
-      tools: [{ label: 'Statutory audit checklist', href: '#checklists' }, { label: 'Company deadlines', href: '#deadlines' }]
+      tools: [{ label: 'Statutory audit checklist', href: 'tools.html#check-audit' }, { label: 'Donor audit checklist', href: 'tools.html#check-donor' }, { label: 'Company deadlines', href: 'tools.html#deadlines' }]
     },
     {
       id: 'monthly', icon: 'book', label: 'Books and payroll, monthly', sub: 'Bookkeeping, payslips, filings',
@@ -424,7 +424,7 @@ window.QUARTEX_CONTENT = {
       first: 'We review your current records and agree a monthly close date and a monthly fee.',
       know: 'Late payroll remittances attract penalties and interest, so the 9th is the date we build the month around.',
       service: 'accounting-financial-management',
-      tools: [{ label: 'Net pay and PAYE calculator', href: '#tool-paye' }, { label: 'This month’s deadlines', href: '#deadlines' }]
+      tools: [{ label: 'Net pay and PAYE calculator', href: 'tools.html#tool-paye' }, { label: 'This month’s deadlines', href: 'tools.html#deadlines' }, { label: 'Bookkeeping hand-over checklist', href: 'tools.html#check-bookkeeping' }]
     },
     {
       id: 'startup', icon: 'plus', label: 'I’m starting a company', sub: 'Registration, PIN, first-year setup',
@@ -439,7 +439,7 @@ window.QUARTEX_CONTENT = {
       first: 'A conversation about what you must register for now and what can wait until the business is trading.',
       know: 'Registering for VAT before you need to creates monthly filing obligations even in months with no sales.',
       service: 'compliance-governance',
-      tools: [{ label: 'Company set-up checklist', href: '#checklists' }, { label: 'Turnover tax calculator', href: '#tool-tot' }]
+      tools: [{ label: 'Company set-up checklist', href: 'tools.html#check-company' }, { label: 'Turnover tax calculator', href: 'tools.html#tool-tot' }, { label: 'Which licences does a new business need?', href: 'answers.html#find-licence' }]
     },
     {
       id: 'controls', icon: 'lock', label: 'Stronger controls', sub: 'Internal audit, risk, governance',
@@ -454,7 +454,7 @@ window.QUARTEX_CONTENT = {
       first: 'A short diagnostic of where money, approvals and records currently flow.',
       know: 'Controls that staff cannot follow get bypassed. We write procedures for the people who will actually use them.',
       service: 'risk-internal-controls',
-      tools: [{ label: 'Risk and internal controls', href: '#service-risk-internal-controls' }, { label: 'Compliance and governance', href: '#service-compliance-governance' }]
+      tools: [{ label: 'Risk and internal controls', href: 'services.html#service-risk-internal-controls' }, { label: 'Compliance and governance', href: 'services.html#service-compliance-governance' }, { label: 'Internal versus external audit', href: 'answers.html#find-internal' }]
     },
     {
       id: 'software', icon: 'screen', label: 'New accounting software', sub: 'QuickBooks, Xero, Sage, Odoo, ERPNext',
@@ -469,7 +469,7 @@ window.QUARTEX_CONTENT = {
       first: 'We map your chart of accounts and reporting needs before anyone chooses a system.',
       know: 'Migrate at a month-end with reconciled balances. Mid-month cut-overs are where figures go missing.',
       service: 'digital-transformation',
-      tools: [{ label: 'Which software fits a small business?', href: '#answers' }, { label: 'Digital finance and systems', href: '#service-digital-transformation' }]
+      tools: [{ label: 'Which software fits a small business?', href: 'answers.html#find-software' }, { label: 'Digital finance and systems', href: 'services.html#service-digital-transformation' }]
     },
     {
       id: 'training', icon: 'cap', label: 'Train my team', sub: 'Tax, finance, audit, software',
@@ -484,7 +484,7 @@ window.QUARTEX_CONTENT = {
       first: 'Tell us who is in the room and what they handle. The session is built around their real work.',
       know: 'Short, repeated sessions with your own documents stick better than a one-day generic course.',
       service: 'training-capacity-building',
-      tools: [{ label: 'Training and capacity building', href: '#service-training-capacity-building' }]
+      tools: [{ label: 'Training and capacity building', href: 'services.html#service-training-capacity-building' }, { label: 'What are the PAYE bands?', href: 'answers.html#find-bands' }]
     },
     {
       id: 'unsure', icon: 'help', label: 'I’m not sure yet', sub: 'Start with a conversation',
@@ -498,7 +498,7 @@ window.QUARTEX_CONTENT = {
       first: 'A conversation first. No proposal until we understand the situation.',
       know: 'You do not need to tidy your records before you call. Untidy is where most engagements start.',
       service: 'business-advisory',
-      tools: [{ label: 'Common questions', href: '#answers' }, { label: 'How an engagement runs', href: '#firm' }]
+      tools: [{ label: 'How an engagement runs', href: 'about.html#process' }, { label: 'How do you charge?', href: 'answers.html#find-charge' }, { label: 'Common questions', href: 'answers.html' }]
     }
   ],
 
@@ -556,6 +556,15 @@ window.QUARTEX_CONTENT = {
       ]
     }
   },
+
+  /* The calculators on tools.html, for the home page links and site search. */
+  calculators: [
+    { id: 'paye', title: 'Net pay and PAYE', keywords: 'salary take-home payslip NSSF SHIF housing levy employer cost' },
+    { id: 'vat', title: 'VAT', keywords: 'value added tax 16% inclusive exclusive price' },
+    { id: 'tot', title: 'Turnover tax', keywords: 'TOT small business 1.5% gross sales' },
+    { id: 'mri', title: 'Rental income tax', keywords: 'landlord rent 7.5% monthly rental income MRI' },
+    { id: 'penalty', title: 'Late penalty estimator', keywords: 'late filing penalty interest fine missed return amnesty' }
+  ],
 
   /* What to have ready. Each list can be copied with one tap. */
   checklists: [
