@@ -60,11 +60,17 @@
 
   /* ---------- header, menu, bottom bar ---------- */
   const head = $('.site-head'), menuBtn = $('#menu-btn'), menuSheet = $('#menu-sheet');
+  const onMenuOpen = [];
+  /* The sheet is fixed from the bottom of the header to the bottom of the visible screen,
+     so it never runs past the fold, whatever the browser's address bar is doing. */
+  const placeSheet = () => { if (menuSheet) menuSheet.style.setProperty('--sheet-top', Math.max(0, Math.round(head.getBoundingClientRect().bottom)) + 'px'); };
   function setMenu(open) {
     if (!head || !menuBtn || !menuSheet) return;
+    if (open) { placeSheet(); onMenuOpen.forEach(f => f()); }
     head.classList.toggle('open', open);
     document.body.classList.toggle('menu-open', open);
     menuSheet.hidden = !open;
+    if (open) menuSheet.scrollTop = 0;
     menuBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
     $('span', menuBtn).textContent = open ? 'Close' : 'Menu';
     $('use', menuBtn).setAttribute('href', open ? '#i-close' : '#i-menu');
@@ -74,7 +80,7 @@
     menuBtn.addEventListener('click', () => setMenu(!head.classList.contains('open')));
     menuSheet.addEventListener('click', e => { if (e.target.closest('a')) closeMenu(); });
     document.addEventListener('keydown', e => { if (e.key === 'Escape' && head.classList.contains('open')) { closeMenu(); menuBtn.focus(); } });
-    window.addEventListener('resize', () => { if (window.innerWidth > 980) closeMenu(); });
+    window.addEventListener('resize', () => { if (window.innerWidth > 980) closeMenu(); else if (head.classList.contains('open')) placeSheet(); });
   }
   const progress = $('#progress');
   let ticking = false;
@@ -674,27 +680,60 @@
   }
   const sheetNav = $('#menu-sheet-nav');
   if (sheetNav) {
-    const curp = p => (p === page ? ' aria-current="page"' : '');
+    let i = 0;
+    const cur = p => (p === page ? ' aria-current="page"' : '');
+    const row = (href, p, title, sub) => `<li class="ms-item" style="--i:${i++}"><a class="ms-row" href="${href}"${cur(p)}><span class="ms-t"><b>${title}</b><small>${sub}</small></span><span class="ms-ic">${icon('arrow')}</span></a></li>`;
+    const group = (id, p, title, sub, inner) => `<li class="ms-item has-sub" style="--i:${i++}"><button class="ms-row" type="button" aria-expanded="false" aria-controls="ms-sub-${id}"${p === page ? ' data-current="true"' : ''}><span class="ms-t"><b>${title}</b><small>${sub}</small></span><span class="ms-ic">${icon('plus-s')}</span></button><div class="ms-sub" id="ms-sub-${id}"><div class="ms-sub-in">${inner}</div></div></li>`;
+    const sub = (href, lead, label, note, tail, attrs = '') => `<li><a href="${href}"${attrs}>${lead}<span class="ms-l">${label}${note ? `<small>${note}</small>` : ''}</span>${tail || icon('arrow')}</a></li>`;
+    const more = links => `<div class="ms-more">${links.map(([h, l]) => `<a href="${h}">${l} ${icon('arrow')}</a>`).join('')}</div>`;
+    let nextPill = '';
+    try { const { items } = upcoming(); if (items[0]) nextPill = `<span class="ms-pill">Next ${esc(fmt(items[0].d))}</span>`; } catch (e) { /* the row still links to the calendar */ }
+    const services = `<ol class="ms-subl">${C.services.map((s, k) => sub(`services.html#service-${esc(s.id)}`, `<span class="n">${n2g(k)}</span>`, esc(s.shortTitle), '', '', ` data-svc="${esc(s.id)}"`)).join('')}</ol>`
+      + more([['services.html', 'All services, in full'], ['index.html#start', 'Not sure? Tell us what you need']]);
+    const tools = `<ul class="ms-subl">`
+      + sub('tools.html#deadlines', icon('calendar'), 'Statutory deadlines', 'Every date, with its source', nextPill)
+      + sub('tools.html#calculators', icon('calc'), 'Calculators', 'PAYE, VAT, turnover tax, rent, penalties')
+      + sub('tools.html#checklists', icon('list'), 'What to have ready', `${C.checklists.length} checklists to tick or copy`)
+      + `</ul>` + more([['tools.html', 'Open the tools page']]);
+    const about = `<ul class="ms-subl">`
+      + sub('about.html#firm', icon('shield'), 'Why Quartex', 'One team across the disciplines')
+      + sub('about.html#people', icon('user'), 'Our people', `The ${C.people.length} leads on your file`)
+      + sub('about.html#process', icon('steps'), 'How an engagement runs', `${C.process.length} steps, from first call to follow-up`)
+      + sub(esc(cfg.profilePdf), icon('doc'), 'Company profile', 'PDF, 41 pages', icon('out'), ' target="_blank" rel="noopener"')
+      + `</ul>` + more([['about.html', 'Open the about page']]);
     sheetNav.innerHTML = `
-      <div class="ms-top">
-        <a href="index.html"${curp('index')}>${icon('home')}<span>Home</span></a>
-        <a href="answers.html"${curp('answers')}>${icon('help')}<span>Answers</span></a>
-        <a href="about.html"${curp('about')}>${icon('shield')}<span>About</span></a>
-        <a href="contact.html"${curp('contact')}>${icon('chat')}<span>Contact</span></a>
+      <button class="ms-search" type="button">${icon('search')}<span>Search services, deadlines, answers</span></button>
+      <ol class="ms-main">
+        ${row('index.html', 'index', 'Home', 'What do you need today?')}
+        ${group('services', 'services', 'Services', `${C.services.length} practice areas, one team`, services)}
+        ${group('tools', 'tools', 'Tools', 'Deadlines, calculators, checklists', tools)}
+        ${row('answers.html', 'answers', 'Answers', `${C.faqs.length} plain answers you can search`)}
+        ${group('about', 'about', 'About', 'The firm and the people', about)}
+        ${row('contact.html', 'contact', 'Contact', 'WhatsApp, call, email or a consultation request')}
+      </ol>
+      <div class="ms-cta">
+        <a class="btn btn-gold" href="contact.html">Request a consultation</a>
+        <div class="ms-routes"><a href="${waLink('I would like to talk about my accounts.')}" target="_blank" rel="noopener">${icon('chat')}WhatsApp</a><a href="tel:${esc(cfg.phones[0].replace(/\s+/g, ''))}">${icon('phone')}Call</a><a href="mailto:${esc(cfg.email)}">${icon('mail')}Email</a></div>
       </div>
-      <section class="ms-group"><a class="ms-head" href="services.html"${curp('services')}>Services <small>${C.services.length} practice areas</small>${icon('arrow')}</a><ol class="ms-list">${svcLinks(false)}</ol></section>
-      <section class="ms-group"><a class="ms-head" href="tools.html"${curp('tools')}>Tools <small>work it out before you call</small>${icon('arrow')}</a><ul class="ms-list plain">
-        <li><a href="tools.html#deadlines">${icon('calendar')}<span>Statutory deadlines</span></a></li>
-        <li><a href="tools.html#calculators">${icon('calc')}<span>Calculators</span></a></li>
-        <li><a href="tools.html#checklists">${icon('list')}<span>What to have ready</span></a></li>
-        <li><a href="answers.html">${icon('help')}<span>Common questions</span></a></li></ul></section>
-      <section class="ms-group"><a class="ms-head" href="about.html"${curp('about')}>About <small>the firm and the people</small>${icon('arrow')}</a><ul class="ms-list plain">
-        <li><a href="about.html#firm">${icon('shield')}<span>Why Quartex</span></a></li>
-        <li><a href="about.html#people">${icon('briefcase')}<span>Our people</span></a></li>
-        <li><a href="about.html#process">${icon('notice')}<span>How an engagement runs</span></a></li>
-        <li><a href="${esc(cfg.profilePdf)}" target="_blank" rel="noopener">${icon('doc')}<span>Company profile (PDF)</span></a></li></ul></section>
-      <div class="ms-cta"><a class="btn btn-primary" href="contact.html">Request a consultation</a>
-        <div class="ms-routes"><a class="wa" href="${waLink('I would like to talk about my accounts.')}" target="_blank" rel="noopener">${icon('chat')}WhatsApp</a><a href="tel:${esc(cfg.phones[0].replace(/\s+/g, ''))}">${icon('phone')}Call</a><a href="mailto:${esc(cfg.email)}">${icon('mail')}Email</a></div></div>`;
+      <p class="ms-foot"><em>${esc(cfg.tagline)}</em><span>Westlands, Nairobi</span></p>`;
+    const groups = $$('.ms-item.has-sub', sheetNav);
+    const setGroup = (li, open) => { li.classList.toggle('open', open); $('.ms-row', li).setAttribute('aria-expanded', open ? 'true' : 'false'); };
+    sheetNav.addEventListener('click', e => {
+      if (e.target.closest('.ms-search')) { openSearch(''); return; }
+      const btn = e.target.closest('button.ms-row'); if (!btn) return;
+      const li = btn.closest('.ms-item'), open = !li.classList.contains('open');
+      groups.forEach(g => { if (g !== li) setGroup(g, false); });
+      setGroup(li, open);
+      if (open) setTimeout(() => {   /* bring the opened group into view if it ran past the foot of the sheet */
+        const r = li.getBoundingClientRect(), sr = menuSheet.getBoundingClientRect();
+        if (r.bottom > sr.bottom - 12) menuSheet.scrollBy({ top: Math.min(r.bottom - sr.bottom + 24, r.top - sr.top - 12), behavior: reduce ? 'auto' : 'smooth' });
+      }, reduce ? 0 : 320);
+    });
+    onMenuOpen.push(() => {
+      groups.forEach(g => setGroup(g, false));   /* always open on the overview */
+      const m = page === 'services' ? (hashOf().match(/^service-(.+)$/) || [0, C.services[0].id])[1] : null;
+      $$('a[data-svc]', sheetNav).forEach(a => { if (a.dataset.svc === m) a.setAttribute('aria-current', 'true'); else a.removeAttribute('aria-current'); });
+    });
   }
 
   /* ---------- sub-navigation: mark the section in view; on phones the page bar follows it ---------- */
