@@ -261,34 +261,38 @@
     const tags = a => a.replace(/\.$/, '').split(/,\s*|\s+and\s+/).map(t => t.trim()).filter(Boolean).map(t => t.charAt(0).toUpperCase() + t.slice(1));
     $('#svc-jump').innerHTML = C.services.map(s => `<a href="#service-${esc(s.id)}">${esc(s.shortTitle)}</a>`).join('');
     $('#svc-index').innerHTML = C.services.map((s, i) => `<li><button type="button" data-svc="${esc(s.id)}" aria-current="false"><span class="n">${n2(i)}</span><span class="t">${esc(s.title)}</span>${icon('arrow')}</button></li>`).join('');
+    const FRAME = 'M119 85H518C591 85 644 136 644 209V594H369C326 594 300 580 279 541L76 170C51 123 68 85 119 85Z';
+    const figure = (s, i) => `<svg class="sp-figure" viewBox="40 60 620 560" role="img" aria-label="${esc(s.imageAlt)}"><defs><clipPath id="spf-${i}"><path d="${FRAME}"/></clipPath></defs><path d="M292-75H430L680 390V640L292-75Z" fill="#F9DEBD" opacity=".9"/><path d="M0 132H143C215 132 250 181 250 247V523H0Z" fill="#082344"/><path d="${FRAME}" fill="#CE9645" stroke="#CE9645" stroke-width="28"/><g clip-path="url(#spf-${i})"><image href="${edit(s.image, 900)}" x="40" y="60" width="640" height="560" preserveAspectRatio="xMidYMid slice"/></g></svg>`;
     $('#svc-stage').innerHTML = C.services.map((s, i) => {
       const prev = C.services[(i + C.services.length - 1) % C.services.length], next = C.services[(i + 1) % C.services.length];
       const f = C.finder.find(x => x.id === s.need);
       return `
       <article class="svc-panel" id="service-${esc(s.id)}" hidden>
-        <div class="sp-media">
-          ${pictureFor(s.image, s.imageAlt, s.imageRatio, '(max-width: 980px) 100vw, 900px')}
-          <span class="sp-num">${n2(i)} <i>/ 08</i></span>
-        </div>
-        <div class="sp-body">
-          <div class="sp-main">
+        <header class="sp-head">
+          <div class="sp-head-copy">
+            <span class="kicker">Practice area ${n2(i)} of 08</span>
             <h2>${esc(s.title)}</h2>
             <p class="promise">${esc(s.promise)}</p>
             <p class="desc">${esc(s.description)}</p>
-            <h3>How we can support you</h3>
-            <ul class="dlg-list">${s.bullets.map(x => `<li>${esc(x)}</li>`).join('')}</ul>
           </div>
-          <aside class="sp-side">
-            <div class="sp-card"><h4>Who this is for</h4><div class="tags">${(s.tags || tags(s.audience)).map(t => `<span>${esc(t)}</span>`).join('')}</div></div>
-            <div class="sp-card peach"><h4>What you end up with</h4><p>${esc(s.outcome)}</p></div>
-            <div class="sp-card navy"><h4>Start the conversation</h4><p>${f ? esc(f.first) : 'Tell us what is going on and we will say what we would do first.'}</p><div class="sp-acts"><button class="btn btn-gold" type="button" data-need="${esc(s.need)}">Discuss this service</button><a class="btn btn-light" href="${waLink('I would like to talk about ' + s.title.toLowerCase() + '.')}" target="_blank" rel="noopener">${icon('chat')}WhatsApp</a></div></div>
-            ${s.related && s.related.length ? `<div class="sp-card"><h4>Useful on this site</h4><ul class="related">${s.related.map(r => `<li><a href="${esc(r.href)}">${esc(r.label)}</a></li>`).join('')}</ul></div>` : ''}
-          </aside>
-        </div>
-        <nav class="sp-nav" aria-label="Other practice areas">
-          <a href="#service-${esc(prev.id)}"><span>Previous</span><b>${esc(prev.shortTitle)}</b></a>
-          <a href="#service-${esc(next.id)}" class="next"><span>Next</span><b>${esc(next.shortTitle)}</b></a>
-        </nav>
+          <div class="sp-head-art">${figure(s, i)}</div>
+        </header>
+        <section class="sp-list" aria-label="How we can support you">
+          <h3>How we can support you</h3>
+          <ul class="dlg-list">${s.bullets.map(x => `<li>${esc(x)}</li>`).join('')}</ul>
+        </section>
+        <section class="sp-cards" aria-label="Who it is for, the outcome and the next step">
+          <div class="sp-card"><h4>Who this is for</h4><div class="tags">${(s.tags || tags(s.audience)).map(t => `<span>${esc(t)}</span>`).join('')}</div></div>
+          <div class="sp-card peach"><h4>What you end up with</h4><p>${esc(s.outcome)}</p></div>
+          <div class="sp-card navy"><h4>The next step</h4><p>${f ? esc(f.first) : 'Tell us what is going on and we will say what we would do first.'}</p><div class="sp-acts"><button class="btn btn-gold" type="button" data-need="${esc(s.need)}">Discuss this service</button><a class="btn btn-light" href="${waLink('I would like to talk about ' + s.title.toLowerCase() + '.')}" target="_blank" rel="noopener">${icon('chat')}WhatsApp</a></div></div>
+        </section>
+        <footer class="sp-foot">
+          ${s.related && s.related.length ? `<div class="sp-related"><h4>Useful on this site</h4><ul class="related">${s.related.map(r => `<li><a href="${esc(r.href)}">${esc(r.label)}</a></li>`).join('')}</ul></div>` : '<div></div>'}
+          <nav class="sp-nav" aria-label="Other practice areas">
+            <a href="#service-${esc(prev.id)}"><span>Previous</span><b>${esc(prev.shortTitle)}</b></a>
+            <a href="#service-${esc(next.id)}" class="next"><span>Next</span><b>${esc(next.shortTitle)}</b></a>
+          </nav>
+        </footer>
       </article>`;
     }).join('');
     let currentSvc = null;
