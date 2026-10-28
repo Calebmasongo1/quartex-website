@@ -28,9 +28,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap">
   <link rel="stylesheet" href="assets/fonts/fonts.css">
-  <link rel="stylesheet" href="styles.css?v=42e1158e9b">
-  <script defer src="content.js?v=42e1158e9b"></script>
-  <script defer src="app.js?v=42e1158e9b"></script>
+  <link rel="stylesheet" href="styles.css?v=4ae63d7a8e">
+  <script defer src="content.js?v=4ae63d7a8e"></script>
+  <script defer src="app.js?v=4ae63d7a8e"></script>
   <script type="application/ld+json">
   {"@context":"https://schema.org","@type":"AccountingService","name":"Quartex Synergy & Associates","alternateName":"Quartex","url":"https://quartexsynergy.com/","logo":"https://quartexsynergy.com/assets/apple-touch-icon.png","image":"https://quartexsynergy.com/assets/og-image.jpg","description":"A multidisciplinary professional services and business advisory firm providing audit, taxation, accounting, risk management, regulatory compliance, corporate advisory and business transformation services in Kenya.","email":"info@quartexsynergy.co.ke","telephone":"+254795019199","address":{"@type":"PostalAddress","addressLocality":"Westlands","addressRegion":"Nairobi","addressCountry":"KE","postOfficeBoxNumber":"10 – 00100"},"areaServed":{"@type":"Country","name":"Kenya"},"slogan":"Integrity, Precision, Innovation, Growth."}
   </script>
@@ -59,6 +59,11 @@
   <symbol id="i-calc" viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 7h8"/><path d="M8 12h.5M12 12h.5M16 12h.5M8 16h.5M12 16h.5M16 16h.5"/></symbol>
   <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol>
   <symbol id="i-briefcase" viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/><path d="M3 12h18"/></symbol>
+  <symbol id="i-chev" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+  <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+  <symbol id="i-grid" viewBox="0 0 24 24"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></symbol>
+  <symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></symbol>
+  <symbol id="i-list" viewBox="0 0 24 24"><path d="M9 6h11M9 12h11M9 18h11"/><path d="M4 6h.5M4 12h.5M4 18h.5"/></symbol>
 </defs></svg>
 
 <a class="skip" href="#main">Skip to content</a>
@@ -79,17 +84,31 @@
     <a class="brand" href="index.html" aria-label="Quartex Synergy &amp; Associates, home"><img src="assets/quartex-official-logo.svg" alt="Quartex Synergy &amp; Associates" width="474" height="119"></a>
     <nav class="primary" id="primary-nav" aria-label="Site">
       <ul>
-        <li class="menu-home"><a href="index.html" aria-current="page">Home</a></li>
-        <li><a href="services.html">Services</a></li><li><a href="tools.html">Tools</a></li><li><a href="answers.html">Answers</a></li><li><a href="about.html">About</a></li><li><a href="contact.html">Contact</a></li>
-        <li class="menu-cta"><a class="btn btn-primary" href="contact.html">Request a consultation</a></li>
+        <li class="has-menu"><a href="services.html">Services</a><button class="mega-btn" type="button" aria-expanded="false" aria-controls="mega-services" aria-label="Open the services menu"><svg class="icon"><use href="#i-chev"/></svg></button><div class="mega" id="mega-services" hidden></div></li>
+        <li class="has-menu"><a href="tools.html">Tools</a><button class="mega-btn" type="button" aria-expanded="false" aria-controls="mega-tools" aria-label="Open the tools menu"><svg class="icon"><use href="#i-chev"/></svg></button><div class="mega" id="mega-tools" hidden></div></li>
+        <li><a href="answers.html">Answers</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="contact.html">Contact</a></li>
       </ul>
     </nav>
     <div class="head-actions">
       <button class="search-btn" id="search-btn" type="button" aria-label="Search the site"><svg class="icon"><use href="#i-search"/></svg><span>Search</span></button>
       <a class="btn btn-primary head-cta" href="contact.html">Request a consultation</a>
-      <button class="menu-btn" id="menu-btn" type="button" aria-expanded="false" aria-controls="primary-nav">Menu</button>
+      <button class="menu-btn" id="menu-btn" type="button" aria-expanded="false" aria-controls="menu-sheet"><svg class="icon"><use href="#i-menu"/></svg><span>Menu</span></button>
     </div>
     <div class="progress" id="progress" aria-hidden="true"></div>
+  </div>
+  <div class="menu-sheet" id="menu-sheet" hidden>
+    <nav class="wrap" id="menu-sheet-nav" aria-label="All pages">
+      <ul class="ms-fallback">
+        <li><a href="index.html" aria-current="page">Home</a></li>
+        <li><a href="services.html">Services</a></li>
+        <li><a href="tools.html">Tools</a></li>
+        <li><a href="answers.html">Answers</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+    </nav>
   </div>
 </header>
 

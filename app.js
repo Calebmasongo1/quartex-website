@@ -59,12 +59,22 @@
   dlg.addEventListener('click', e => { if (e.target.closest('[data-close]')) closeDialog(); else if (e.target === dlg && outsideClick(dlg, e)) closeDialog(); });
 
   /* ---------- header, menu, bottom bar ---------- */
-  const head = $('.site-head'), menuBtn = $('#menu-btn');
-  function closeMenu() { if (!head) return; head.classList.remove('open'); menuBtn.setAttribute('aria-expanded', 'false'); menuBtn.textContent = 'Menu'; }
-  if (menuBtn) {
-    menuBtn.addEventListener('click', () => { const open = head.classList.toggle('open'); menuBtn.setAttribute('aria-expanded', open ? 'true' : 'false'); menuBtn.textContent = open ? 'Close' : 'Menu'; });
-    $$('.primary a').forEach(a => a.addEventListener('click', () => closeMenu()));
+  const head = $('.site-head'), menuBtn = $('#menu-btn'), menuSheet = $('#menu-sheet');
+  function setMenu(open) {
+    if (!head || !menuBtn || !menuSheet) return;
+    head.classList.toggle('open', open);
+    document.body.classList.toggle('menu-open', open);
+    menuSheet.hidden = !open;
+    menuBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    $('span', menuBtn).textContent = open ? 'Close' : 'Menu';
+    $('use', menuBtn).setAttribute('href', open ? '#i-close' : '#i-menu');
+  }
+  function closeMenu() { if (head && head.classList.contains('open')) setMenu(false); }
+  if (menuBtn && menuSheet) {
+    menuBtn.addEventListener('click', () => setMenu(!head.classList.contains('open')));
+    menuSheet.addEventListener('click', e => { if (e.target.closest('a')) closeMenu(); });
     document.addEventListener('keydown', e => { if (e.key === 'Escape' && head.classList.contains('open')) { closeMenu(); menuBtn.focus(); } });
+    window.addEventListener('resize', () => { if (window.innerWidth > 980) closeMenu(); });
   }
   const progress = $('#progress');
   let ticking = false;
@@ -255,12 +265,39 @@
         <b>${esc(p.name)}</b><span>${esc(p.displayRole)}</span></a></li>`).join('');
   }
 
+  /* ---------- "on this page" bar (phones): current section, previous/next, and the full list ---------- */
+  const n2g = i => String(i + 1).padStart(2, '0');
+  function pageBar({ items, trigger, stage, kicker, onPick }) {
+    const bar = $('#pagebar');
+    if (!bar || !items.length || !trigger) return null;
+    const cur = $('#pb-cur'), list = $('#pb-list'), ol = $('#pb-items'), k = $('#pb-k'), t = $('#pb-t');
+    ol.innerHTML = items.map((it, i) => `<li><button type="button" data-i="${i}" aria-current="false"><span class="n">${n2g(i)}</span><span>${esc(it.label)}</span>${icon('check')}</button></li>`).join('');
+    let idx = 0;
+    function paint(i) { if (i < 0 || i >= items.length) return; idx = i; t.textContent = items[i].label; k.textContent = typeof kicker === 'function' ? kicker(i) : kicker; $$('button[data-i]', ol).forEach((b, j) => b.setAttribute('aria-current', j === i ? 'true' : 'false')); }
+    function closeList() { list.hidden = true; cur.setAttribute('aria-expanded', 'false'); }
+    cur.addEventListener('click', () => { const open = list.hidden; list.hidden = !open; cur.setAttribute('aria-expanded', open ? 'true' : 'false'); });
+    ol.addEventListener('click', e => { const b = e.target.closest('button[data-i]'); if (!b) return; closeList(); onPick(+b.dataset.i); });
+    $('#pb-prev').addEventListener('click', () => onPick((idx + items.length - 1) % items.length));
+    $('#pb-next').addEventListener('click', () => onPick((idx + 1) % items.length));
+    document.addEventListener('click', e => { if (!list.hidden && !e.target.closest('#pagebar')) closeList(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape' && !list.hidden) { closeList(); cur.focus(); } });
+    let above = false, inStage = true;
+    const apply = () => { const show = above && inStage && window.innerWidth < 981; if (bar.hidden === show) { bar.hidden = !show; if (!show) closeList(); } };
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(en => { en.forEach(x => { above = !x.isIntersecting && x.boundingClientRect.bottom < 140; }); apply(); }, { rootMargin: '-130px 0px 0px 0px', threshold: 0 }).observe(trigger);
+      if (stage) new IntersectionObserver(en => { en.forEach(x => { inStage = x.isIntersecting; }); apply(); }, { rootMargin: '-130px 0px 0px 0px', threshold: 0 }).observe(stage);
+    }
+    window.addEventListener('resize', apply, { passive: true });
+    paint(0);
+    return { paint, close: closeList };
+  }
+
   /* ---------- services page: a directory, one practice area at a time ---------- */
   if (page === 'services') {
-    const n2 = i => String(i + 1).padStart(2, '0');
+    const n2 = n2g;
     const tags = a => a.replace(/\.$/, '').split(/,\s*|\s+and\s+/).map(t => t.trim()).filter(Boolean).map(t => t.charAt(0).toUpperCase() + t.slice(1));
-    $('#svc-jump').innerHTML = C.services.map(s => `<a href="#service-${esc(s.id)}">${esc(s.shortTitle)}</a>`).join('');
-    $('#svc-index').innerHTML = C.services.map((s, i) => `<li><button type="button" data-svc="${esc(s.id)}" aria-current="false"><span class="n">${n2(i)}</span><span class="t">${esc(s.title)}</span>${icon('arrow')}</button></li>`).join('');
+    const jump = $('#svc-jump'); if (jump) jump.innerHTML = C.services.map(s => `<a href="#service-${esc(s.id)}">${esc(s.shortTitle)}</a>`).join('');
+    $('#svc-index').innerHTML = C.services.map((s, i) => `<li><button type="button" data-svc="${esc(s.id)}" aria-current="false"><span class="n">${n2(i)}</span><span class="t">${esc(s.title)}</span><span class="ts">${esc(s.shortTitle)}</span>${icon('arrow')}</button></li>`).join('');
     const FRAME = 'M119 85H518C591 85 644 136 644 209V594H369C326 594 300 580 279 541L76 170C51 123 68 85 119 85Z';
     const figure = (s, i) => `<svg class="sp-figure" viewBox="40 60 620 560" role="img" aria-label="${esc(s.imageAlt)}"><defs><clipPath id="spf-${i}"><path d="${FRAME}"/></clipPath></defs><path d="M292-75H430L680 390V640L292-75Z" fill="#F9DEBD" opacity=".9"/><path d="M0 132H143C215 132 250 181 250 247V523H0Z" fill="#082344"/><path d="${FRAME}" fill="#CE9645" stroke="#CE9645" stroke-width="28"/><g clip-path="url(#spf-${i})"><image href="${edit(s.image, 900)}" x="40" y="60" width="640" height="560" preserveAspectRatio="xMidYMid slice"/></g></svg>`;
     $('#svc-stage').innerHTML = C.services.map((s, i) => {
@@ -296,16 +333,19 @@
       </article>`;
     }).join('');
     let currentSvc = null;
+    const phone = () => window.innerWidth < 981;
+    const bar = pageBar({ items: C.services.map(s => ({ id: s.id, label: s.title })), trigger: $('#svc-index'), stage: $('#svc-stage'), kicker: i => `Practice area ${n2(i)} of ${n2(C.services.length - 1)}`, onPick: i => selectService(C.services[i].id, { scroll: true }) });
     function selectService(id, { scroll = false, push = true } = {}) {
       if (!svcById[id]) id = C.services[0].id;
       currentSvc = id;
       $$('.svc-panel').forEach(p => { const on = p.id === 'service-' + id; if (on && p.hidden) { p.hidden = false; p.classList.remove('show'); void p.offsetWidth; p.classList.add('show'); } else if (!on) p.hidden = true; });
       $$('#svc-index button').forEach(b => b.setAttribute('aria-current', b.dataset.svc === id ? 'true' : 'false'));
-      $$('#svc-jump a').forEach(a => { const on = a.getAttribute('href') === '#service-' + id; a.classList.toggle('active', on); if (on) a.scrollIntoView({ block: 'nearest', inline: 'center', behavior: reduce ? 'auto' : 'smooth' }); });
+      $$('#svc-jump a').forEach(a => { const on = a.getAttribute('href') === '#service-' + id; a.classList.toggle('active', on); });
+      if (bar) bar.paint(C.services.findIndex(s => s.id === id));
       if (push && hashOf() !== 'service-' + id) history.replaceState(null, '', '#service-' + id);
-      if (scroll) scrollTo($('#service-list'));
+      if (scroll) scrollTo(phone() ? $('#svc-stage') : $('#service-list'));
     }
-    $('#svc-index').addEventListener('click', e => { const b = e.target.closest('button[data-svc]'); if (b) selectService(b.dataset.svc, { scroll: window.innerWidth < 981 }); });
+    $('#svc-index').addEventListener('click', e => { const b = e.target.closest('button[data-svc]'); if (b) selectService(b.dataset.svc, { scroll: phone() }); });
     document.addEventListener('click', e => {
       const a = e.target.closest('a[href^="#service-"]'); if (!a) return;
       e.preventDefault(); selectService(a.getAttribute('href').slice(9), { scroll: true });
@@ -603,13 +643,70 @@
     window.addEventListener('hashchange', routeContact);
     routeContact();
   }
-  /* ---------- sub-navigation: mark the section in view ---------- */
-  const subnavLinks = $$('.subnav a[href^="#"]');
+  /* ---------- navigation: the Services and Tools panels (desktop) and the menu sheet (phones) ---------- */
+  const svcLinks = full => C.services.map((s, i) => `<li><a href="services.html#service-${esc(s.id)}"><span class="n">${n2g(i)}</span><span>${full ? `<b>${esc(s.title)}</b><small>${esc(s.promise)}</small>` : esc(s.shortTitle)}</span></a></li>`).join('');
+  const megaS = $('#mega-services'), megaT = $('#mega-tools');
+  if (megaS) megaS.innerHTML = `<div class="mega-grid">
+      <div><div class="mega-head"><span class="kicker">Eight practice areas</span><a class="textlink" href="services.html">All services, in full ${icon('arrow')}</a></div><ol class="mega-list">${svcLinks(true)}</ol></div>
+      <aside class="mega-side"><span class="kicker">Not sure where you fit?</span><p>Pick the situation closest to yours and see what we would do first, what to send and what is worth knowing.</p><a class="btn btn-primary" href="index.html#start">Tell us what you need</a><ul class="mega-links"><li><a href="services.html#who">${icon('briefcase')}Who we serve</a></li><li><a href="${esc(cfg.profilePdf)}" target="_blank" rel="noopener">${icon('doc')}Company profile (PDF)</a></li></ul></aside></div>`;
+  if (megaT) {
+    let dates = '';
+    try { const { items } = upcoming(); dates = `<ul class="mega-dates">${items.slice(0, 3).map(x => `<li><b>${esc(fmt(x.d))}</b><span>${esc(x.r.label)} for ${esc(x.covers)}</span></li>`).join('')}</ul>`; } catch (e) { /* the link below still works */ }
+    megaT.innerHTML = `<div class="mega-grid mega-grid-3">
+      <div class="mega-col"><h4>Statutory deadlines</h4>${dates}<a class="textlink" href="tools.html#deadlines">Full calendar, with sources ${icon('arrow')}</a></div>
+      <div class="mega-col"><h4>Calculators</h4><ul>${(C.calculators || []).map(c => `<li><a href="tools.html#tool-${esc(c.id)}">${esc(c.title)}</a></li>`).join('')}</ul></div>
+      <div class="mega-col"><h4>What to have ready</h4><ul>${C.checklists.map(c => `<li><a href="tools.html#check-${esc(c.id)}">${esc(c.title)}</a></li>`).join('')}</ul></div></div>`;
+  }
+  const hms = $$('.has-menu');
+  if (hms.length) {
+    let hoverT = null;
+    const fine = window.matchMedia && window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+    function closeMegas(except) { hms.forEach(li => { if (li !== except && li.classList.contains('open')) { li.classList.remove('open'); $('.mega-btn', li).setAttribute('aria-expanded', 'false'); $('.mega', li).hidden = true; } }); }
+    function openMega(li) { closeMegas(li); li.classList.add('open'); $('.mega-btn', li).setAttribute('aria-expanded', 'true'); $('.mega', li).hidden = false; }
+    hms.forEach(li => {
+      $('.mega-btn', li).addEventListener('click', () => (li.classList.contains('open') ? closeMegas() : openMega(li)));
+      li.addEventListener('mouseenter', () => { if (!fine) return; clearTimeout(hoverT); hoverT = setTimeout(() => openMega(li), 110); });
+      li.addEventListener('mouseleave', () => { clearTimeout(hoverT); hoverT = setTimeout(() => { if (!li.contains(document.activeElement)) closeMegas(); }, 240); });
+      li.addEventListener('focusout', e => { if (!li.contains(e.relatedTarget)) closeMegas(); });
+    });
+    document.addEventListener('click', e => { if (!e.target.closest('.has-menu')) closeMegas(); });
+    document.addEventListener('keydown', e => { const open = hms.find(l => l.classList.contains('open')); if (e.key === 'Escape' && open) { closeMegas(); $('.mega-btn', open).focus(); } });
+  }
+  const sheetNav = $('#menu-sheet-nav');
+  if (sheetNav) {
+    const curp = p => (p === page ? ' aria-current="page"' : '');
+    sheetNav.innerHTML = `
+      <div class="ms-top">
+        <a href="index.html"${curp('index')}>${icon('home')}<span>Home</span></a>
+        <a href="answers.html"${curp('answers')}>${icon('help')}<span>Answers</span></a>
+        <a href="about.html"${curp('about')}>${icon('shield')}<span>About</span></a>
+        <a href="contact.html"${curp('contact')}>${icon('chat')}<span>Contact</span></a>
+      </div>
+      <section class="ms-group"><a class="ms-head" href="services.html"${curp('services')}>Services <small>${C.services.length} practice areas</small>${icon('arrow')}</a><ol class="ms-list">${svcLinks(false)}</ol></section>
+      <section class="ms-group"><a class="ms-head" href="tools.html"${curp('tools')}>Tools <small>work it out before you call</small>${icon('arrow')}</a><ul class="ms-list plain">
+        <li><a href="tools.html#deadlines">${icon('calendar')}<span>Statutory deadlines</span></a></li>
+        <li><a href="tools.html#calculators">${icon('calc')}<span>Calculators</span></a></li>
+        <li><a href="tools.html#checklists">${icon('list')}<span>What to have ready</span></a></li>
+        <li><a href="answers.html">${icon('help')}<span>Common questions</span></a></li></ul></section>
+      <section class="ms-group"><a class="ms-head" href="about.html"${curp('about')}>About <small>the firm and the people</small>${icon('arrow')}</a><ul class="ms-list plain">
+        <li><a href="about.html#firm">${icon('shield')}<span>Why Quartex</span></a></li>
+        <li><a href="about.html#people">${icon('briefcase')}<span>Our people</span></a></li>
+        <li><a href="about.html#process">${icon('notice')}<span>How an engagement runs</span></a></li>
+        <li><a href="${esc(cfg.profilePdf)}" target="_blank" rel="noopener">${icon('doc')}<span>Company profile (PDF)</span></a></li></ul></section>
+      <div class="ms-cta"><a class="btn btn-primary" href="contact.html">Request a consultation</a>
+        <div class="ms-routes"><a class="wa" href="${waLink('I would like to talk about my accounts.')}" target="_blank" rel="noopener">${icon('chat')}WhatsApp</a><a href="tel:${esc(cfg.phones[0].replace(/\s+/g, ''))}">${icon('phone')}Call</a><a href="mailto:${esc(cfg.email)}">${icon('mail')}Email</a></div></div>`;
+  }
+
+  /* ---------- sub-navigation: mark the section in view; on phones the page bar follows it ---------- */
+  const subnavEl = $('.subnav');
+  const subnavLinks = $$('.subnav a[href^="#"]').filter(a => document.getElementById(a.getAttribute('href').slice(1)));
   if (subnavLinks.length && 'IntersectionObserver' in window) {
     const byId = new Map(subnavLinks.map(a => [a.getAttribute('href').slice(1), a]));
+    const items = subnavLinks.map(a => ({ id: a.getAttribute('href').slice(1), label: a.textContent.trim() }));
+    const bar = page !== 'services' ? pageBar({ items, trigger: subnavEl, stage: $('#main'), kicker: 'On this page', onPick: i => scrollTo(document.getElementById(items[i].id)) }) : null;
     let current = null;
     const io = new IntersectionObserver(entries => {
-      entries.forEach(en => { if (en.isIntersecting) { const a = byId.get(en.target.id); if (a && a !== current) { if (current) current.classList.remove('active'); current = a; a.classList.add('active'); a.scrollIntoView({ block: 'nearest', inline: 'center', behavior: reduce ? 'auto' : 'smooth' }); } } });
+      entries.forEach(en => { if (en.isIntersecting) { const a = byId.get(en.target.id); if (a && a !== current) { if (current) current.classList.remove('active'); current = a; a.classList.add('active'); if (bar) bar.paint(items.findIndex(x => x.id === en.target.id)); } } });
     }, { rootMargin: '-30% 0px -60% 0px' });
     byId.forEach((a, id) => { const t = document.getElementById(id); if (t) io.observe(t); });
   }
