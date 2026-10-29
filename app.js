@@ -341,6 +341,15 @@
     let currentSvc = null;
     const phone = () => window.innerWidth < 981;
     const bar = pageBar({ items: C.services.map(s => ({ id: s.id, label: s.title })), trigger: $('#svc-index'), stage: $('#svc-stage'), kicker: i => `Practice area ${n2(i)} of ${n2(C.services.length - 1)}`, onPick: i => selectService(C.services[i].id, { scroll: true }) });
+    /* Bring the chosen practice area into view from its top: on laptops, just under the header
+       (only if its top is out of view or far down the screen); on phones, under the page bar. */
+    function toPanelTop() {
+      if (phone()) { scrollTo($('#svc-stage')); return; }
+      const panel = $('.svc-panel:not([hidden])'); if (!panel) return;
+      const headEl = $('.site-head'), hb = headEl ? headEl.getBoundingClientRect().bottom : 0, gap = 28;
+      const top = panel.getBoundingClientRect().top;
+      if (top < hb + gap - 2 || top > window.innerHeight * 0.55) window.scrollTo({ top: Math.max(0, window.scrollY + top - hb - gap), behavior: reduce ? 'auto' : 'smooth' });
+    }
     function selectService(id, { scroll = false, push = true } = {}) {
       if (!svcById[id]) id = C.services[0].id;
       currentSvc = id;
@@ -349,9 +358,9 @@
       $$('#svc-jump a').forEach(a => { const on = a.getAttribute('href') === '#service-' + id; a.classList.toggle('active', on); });
       if (bar) bar.paint(C.services.findIndex(s => s.id === id));
       if (push && hashOf() !== 'service-' + id) history.replaceState(null, '', '#service-' + id);
-      if (scroll) scrollTo(phone() ? $('#svc-stage') : $('#service-list'));
+      if (scroll) toPanelTop();
     }
-    $('#svc-index').addEventListener('click', e => { const b = e.target.closest('button[data-svc]'); if (b) selectService(b.dataset.svc, { scroll: phone() }); });
+    $('#svc-index').addEventListener('click', e => { const b = e.target.closest('button[data-svc]'); if (b) selectService(b.dataset.svc, { scroll: true }); });
     document.addEventListener('click', e => {
       const a = e.target.closest('a[href^="#service-"]'); if (!a) return;
       e.preventDefault(); selectService(a.getAttribute('href').slice(9), { scroll: true });
@@ -378,7 +387,7 @@
       whoSel.addEventListener('change', () => applyWho(whoSel.value));
       whoNote.addEventListener('click', e => {
         if (e.target.closest('.who-clear')) { applyWho(''); whoSel.focus(); return; }
-        const go = e.target.closest('[data-svc-go]'); if (go) { selectService(go.dataset.svcGo, { scroll: phone() }); return; }
+        const go = e.target.closest('[data-svc-go]'); if (go) { selectService(go.dataset.svcGo, { scroll: true }); return; }
         const more = e.target.closest('a[data-aud]');
         if (more) { e.preventDefault(); const d = document.getElementById('aud-' + more.dataset.aud); if (d) { d.open = true; scrollTo(d, 'start'); } }
       });
