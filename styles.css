@@ -424,16 +424,6 @@ img { height: auto; }
 .company p { margin: 0; }
 
 /* ---------- Footer ---------- */
-.foot { padding-block: 3rem 2.25rem; font-size: .92rem; color: var(--ink-2); background: var(--white); border-top: 1px solid var(--rule); }
-.foot .cols { display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr; gap: 2.5rem 3rem; }
-.foot .brand img { height: 60px; }
-.foot .tag { font-family: var(--display); font-style: italic; font-size: 1.1rem; color: var(--ink); margin: 1rem 0 .25rem; }
-.foot h4 { font-family: var(--body); font-size: .88rem; font-weight: 600; color: var(--gold-ink); margin-bottom: .7rem; }
-.foot ul { list-style: none; display: grid; gap: .45rem; }
-.foot a { color: var(--ink-2); text-decoration: none; }
-.foot a:hover { color: var(--ink); }
-.foot p { margin: 0 0 .4rem; max-width: 44ch; }
-.foot-bottom { border-top: 1px solid var(--rule-2); margin-top: 2.5rem; padding-top: 1.25rem; display: flex; flex-wrap: wrap; justify-content: space-between; gap: .5rem 2rem; font-size: .86rem; color: var(--ink-3); }
 
 /* Floating WhatsApp */
 .wa-float { display: none; position: fixed; right: calc(16px + env(safe-area-inset-right, 0px)); bottom: calc(16px + env(safe-area-inset-bottom, 0px)); z-index: 40; align-items: center; gap: .5rem; background: #1f7a4d; color: #fff; text-decoration: none; font-weight: 600; font-size: .92rem; padding: .7rem 1rem; border-radius: 999px; box-shadow: 0 10px 24px rgba(8, 35, 68, 0.22); }
@@ -480,7 +470,6 @@ dialog .close:hover { border-color: var(--ink); }
   .tiles, .svc-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .team { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .why { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .foot .cols { grid-template-columns: 1fr 1fr; }
   .primary ul { gap: 1.1rem; }
 }
 @media (max-width: 980px) {
@@ -525,11 +514,9 @@ dialog .close:hover { border-color: var(--ink); }
   .tile .ic svg { width: 19px; height: 19px; }
   .tile b { font-size: .95rem; padding-right: .9rem; }
   .tile span.sub-l { display: none; }
-  .foot .cols { grid-template-columns: 1fr; }
   .form .row2 { grid-template-columns: 1fr; }
   .lines li { grid-template-columns: 4.6rem minmax(0, 1fr) auto; }
   .brand img { height: 42px; }
-  .foot .brand img { height: 52px; }
   .facts { gap: .45rem .85rem; margin-top: 1.5rem; font-size: .88rem; }
   .facts li { gap: .85rem; }
   .hero .wrap { gap: 1.25rem; padding-top: 1rem; }
@@ -1101,8 +1088,6 @@ html.js .reveal.in { opacity: 1; transform: none; transition: opacity .5s ease, 
   .pb-list button[aria-current="true"] .icon { opacity: 1; }
 }
 @media (max-width: 640px) {
-  .foot .cols { grid-template-columns: 1fr 1fr; gap: 1.75rem 1.25rem; }
-  .foot .cols > div:first-child, .foot .cols > div:last-child { grid-column: 1 / -1; }
 }
 
 /* Micro-interactions: arrows nudge, photographs breathe */
@@ -1188,4 +1173,87 @@ html.js .reveal.in { opacity: 1; transform: none; transition: opacity .5s ease, 
 @media (max-width: 980px) {
   .svc-who-note { margin-bottom: 1.5rem; }
   .svc-who-note ul { grid-template-columns: 1fr; }
+}
+
+/* ============================================================
+   v2.6 Footer: a navy sign-off. Identity, four ways to reach the
+   firm, the site map (folded on phones), and the small print.
+   ============================================================ */
+.foot { position: relative; background: var(--navy-deep); color: var(--on-navy-2); font-size: .93rem; padding-block: clamp(2.75rem, 5vw, 4rem) 1.5rem; }
+.foot::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 1px; background: linear-gradient(90deg, rgba(206, 150, 69, 0), rgba(206, 150, 69, 0.7) 20%, rgba(206, 150, 69, 0.7) 80%, rgba(206, 150, 69, 0)); }
+.foot a { color: var(--on-navy); text-decoration: none; }
+.foot :focus-visible { outline-color: var(--gold); }
+.foot-grid { display: grid; grid-template-columns: 1.1fr 1.1fr 1.1fr 1.1fr 1.3fr; grid-template-areas: "brand g1 g2 g3 reach"; gap: 2.5rem 2rem; align-items: start; }
+.foot-brand { grid-area: brand; }
+.foot-reach { grid-area: reach; }
+.fg-1 { grid-area: g1; } .fg-2 { grid-area: g2; } .fg-3 { grid-area: g3; }
+.foot-name { display: inline-flex; align-items: center; gap: .85rem; font-family: var(--display); font-size: 1.32rem; line-height: 1.12; color: var(--on-navy); }
+.foot-mark { flex: none; width: 48px; height: 48px; border-radius: 12px; background: #fff; display: grid; place-items: center; box-shadow: 0 0 0 1px rgba(206, 150, 69, 0.45); }
+.foot-mark img { width: 34px; height: auto; display: block; }
+.foot .tag { font-family: var(--display); font-style: italic; font-size: 1.05rem; color: var(--gold); margin: 1.1rem 0 .35rem; }
+.foot .desc { margin: 0; max-width: 34ch; line-height: 1.55; }
+.foot h4, .fgroup .fs-t { font-family: var(--body); font-size: .76rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--gold); }
+.foot h4 { margin: 0 0 .9rem; }
+.fgroup summary { list-style: none; display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: .9rem; cursor: default; }
+.fgroup summary::-webkit-details-marker { display: none; }
+.fgroup .fs-d, .fgroup .fs-i { display: none; }
+/* Each link reads as a row you can press: a gold number or icon, the label, an arrow. */
+.fgroup ul { list-style: none; display: grid; gap: 0; border-top: 1px solid rgba(247, 244, 238, 0.1); }
+.fgroup ul a { display: grid; grid-template-columns: 1.55rem minmax(0, 1fr) 14px; align-items: center; gap: .5rem; min-height: 42px; padding: .45rem .2rem; border-bottom: 1px solid rgba(247, 244, 238, 0.1); color: var(--on-navy); font-size: .91rem; line-height: 1.3; transition: color .15s, background .15s, padding .15s; }
+.fgroup ul a:hover, .fgroup ul a:focus-visible { color: var(--gold); background: linear-gradient(90deg, rgba(206, 150, 69, 0.1), rgba(206, 150, 69, 0)); padding-left: .45rem; }
+.fl-n { font-family: var(--display); font-size: .92rem; color: var(--gold); font-variant-numeric: tabular-nums; }
+.fl-i { width: 17px; height: 17px; color: var(--gold); }
+.fl-a { width: 14px; height: 14px; color: var(--gold); opacity: .6; transition: transform .2s, opacity .2s; }
+.fgroup ul a:hover .fl-a, .fgroup ul a:focus-visible .fl-a { opacity: 1; transform: translateX(3px); }
+.reach { list-style: none; display: grid; gap: .7rem; }
+.reach li > a { display: grid; grid-template-columns: 36px minmax(0, 1fr); gap: .75rem; align-items: center; }
+.reach .ri { width: 36px; height: 36px; border-radius: 50%; border: 1px solid rgba(247, 244, 238, 0.18); display: grid; place-items: center; color: var(--gold); transition: border-color .15s, background .15s; }
+.reach .ri .icon { width: 17px; height: 17px; }
+.reach li > a:hover .ri { border-color: var(--gold); background: rgba(206, 150, 69, 0.12); }
+.reach .rt { display: grid; min-width: 0; line-height: 1.3; color: var(--on-navy); }
+.reach .rt small { font-size: .74rem; color: var(--on-navy-3); }
+.reach .also { margin: .3rem 0 0 calc(36px + .75rem); font-size: .8rem; color: var(--on-navy-3); line-height: 1.45; }
+.reach .also a { white-space: nowrap; color: var(--on-navy-2); text-decoration: underline; text-decoration-color: rgba(206, 150, 69, 0.6); text-underline-offset: 3px; }
+.foot-bottom { margin-top: clamp(2.25rem, 4vw, 3rem); padding-top: 1.15rem; border-top: 1px solid rgba(247, 244, 238, 0.12); display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .4rem 2rem; font-size: .8rem; color: var(--on-navy-3); }
+.foot-bottom p { margin: 0; }
+.foot-up { display: inline-flex; align-items: center; gap: .45rem; font-weight: 600; color: var(--on-navy) !important; }
+.foot-up .icon { width: 15px; height: 15px; transform: rotate(-90deg); color: var(--gold); transition: transform .2s; }
+.foot-up:hover .icon { transform: rotate(-90deg) translateX(3px); }
+
+/* The floating WhatsApp and back-to-top buttons step aside when the closing section or the footer is on screen. */
+.wa-float, .to-top { transition: opacity .2s, transform .2s, visibility .2s; }
+body.at-end .wa-float, body.at-end .to-top { opacity: 0; visibility: hidden; transform: translateY(12px); pointer-events: none; }
+
+@media (max-width: 1120px) {
+  .foot-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); grid-template-areas: "brand reach reach" "g1 g2 g3"; }
+  .foot-reach .reach { grid-template-columns: 1fr 1fr; gap: .9rem 1.5rem; }
+}
+@media (max-width: 640px) {
+  .foot { padding-block: 2.25rem 1.25rem; }
+  .foot-grid { grid-template-columns: 1fr; grid-template-areas: "brand" "reach" "g1" "g2" "g3"; gap: 0; }
+  .foot-brand { padding-bottom: 1.5rem; }
+  .foot-name { font-size: 1.22rem; }
+  .foot-mark { width: 44px; height: 44px; }
+  .foot-mark img { width: 31px; }
+  .foot .tag { margin-top: .9rem; }
+  .foot-reach { padding: 1.25rem 0 1.4rem; border-top: 1px solid rgba(247, 244, 238, 0.12); }
+  .foot-reach .reach { grid-template-columns: 1fr; gap: .55rem; }
+  .reach li > a { min-height: 48px; }
+  .fgroup { border-top: 1px solid rgba(247, 244, 238, 0.12); }
+  .fgroup:last-of-type { border-bottom: 1px solid rgba(247, 244, 238, 0.12); }
+  .fgroup summary { margin: 0; min-height: 64px; padding: .55rem 0; cursor: pointer; display: grid; grid-template-columns: minmax(0, 1fr) 34px; grid-template-areas: "t i" "d i"; align-items: center; align-content: center; column-gap: 1rem; row-gap: 0; }
+  .fgroup .fs-t { grid-area: t; font-family: var(--display); font-size: 1.28rem; font-weight: 400; letter-spacing: -.005em; text-transform: none; color: var(--on-navy); line-height: 1.15; }
+  .fgroup .fs-d { grid-area: d; display: block; font-size: .78rem; color: var(--on-navy-3); margin-top: .15rem; }
+  .fgroup .fs-i { grid-area: i; display: block; width: 34px; height: 34px; padding: 8px; border-radius: 50%; border: 1px solid rgba(247, 244, 238, 0.2); color: var(--gold); transition: transform .25s, background .2s, color .2s, border-color .2s; }
+  .fgroup[open] .fs-i { transform: rotate(45deg); background: var(--gold); border-color: var(--gold); color: var(--navy); }
+  .fgroup[open] .fs-t { color: var(--gold); }
+  .fgroup ul { grid-template-columns: 1fr 1fr; gap: .5rem; padding: .2rem 0 1.1rem; border-top: 0; }
+  .fgroup ul a { grid-template-columns: minmax(0, 1fr) 14px; grid-template-areas: "lead arrow" "label label"; align-content: start; row-gap: .35rem; min-height: 74px; height: 100%; padding: .7rem .8rem .75rem; border: 1px solid rgba(247, 244, 238, 0.13); border-radius: 12px; background: rgba(247, 244, 238, 0.05); font-size: .92rem; }
+  .fgroup ul a:hover, .fgroup ul a:focus-visible { padding-left: .8rem; background: rgba(206, 150, 69, 0.12); border-color: rgba(206, 150, 69, 0.55); color: var(--on-navy); }
+  .fgroup ul a:active { transform: scale(.98); }
+  .fgroup ul a .fl-n, .fgroup ul a .fl-i { grid-area: lead; }
+  .fgroup ul a .fl-t { grid-area: label; }
+  .fgroup ul a .fl-a { grid-area: arrow; justify-self: end; }
+  .foot-bottom { margin-top: 1.25rem; flex-direction: column; align-items: flex-start; gap: .35rem; }
+  .foot-up { margin-top: .5rem; }
 }

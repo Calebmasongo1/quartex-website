@@ -31,7 +31,7 @@
 
   $$('[data-reviewed]').forEach(el => { el.textContent = cfg.reviewedOn; });
   const year = $('#year'); if (year) year.textContent = String(new Date().getFullYear());
-  const footSvc = $('#foot-services'); if (footSvc) footSvc.innerHTML = C.services.map(s => `<li><a href="services.html#service-${esc(s.id)}">${esc(s.shortTitle)}</a></li>`).join('');
+  const footSvc = $('#foot-services'); if (footSvc) footSvc.innerHTML = C.services.map((s, i) => `<li><a href="services.html#service-${esc(s.id)}"><span class="fl-n">${String(i + 1).padStart(2, '0')}</span><span class="fl-t">${esc(s.shortTitle)}</span>${icon('arrow').replace('class="icon"', 'class="icon fl-a"')}</a></li>`).join('');
 
   /* ---------- dialog ---------- */
   const dlg = $('#dlg');
@@ -797,6 +797,26 @@
     items.forEach(el => io.observe(el));
     setTimeout(() => items.forEach(el => el.classList.add('in')), 2500); /* belt and braces: nothing stays hidden */
   }
+
+  /* ---------- footer: link groups fold on phones; floating buttons step aside at the end of the page ---------- */
+  const footGroups = $$('.foot .fgroup');
+  if (footGroups.length && window.matchMedia) {
+    const small = window.matchMedia('(max-width: 640px)');
+    const syncFoot = () => footGroups.forEach(d => { d.open = !small.matches; });
+    syncFoot();
+    if (small.addEventListener) small.addEventListener('change', syncFoot); else if (small.addListener) small.addListener(syncFoot);
+    footGroups.forEach(d => $('summary', d).addEventListener('click', e => { if (!small.matches) e.preventDefault(); }));
+  }
+  const ends = $$('#site-foot, .contact-band');
+  if (ends.length && 'IntersectionObserver' in window) {
+    const seen = new Set();
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(en => { if (en.isIntersecting) seen.add(en.target); else seen.delete(en.target); });
+      document.body.classList.toggle('at-end', seen.size > 0);
+    }, { rootMargin: '0px 0px -60px 0px' });
+    ends.forEach(el => io.observe(el));
+  }
+  $$('[data-to-top]').forEach(a => a.addEventListener('click', e => { e.preventDefault(); window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' }); }));
 
   /* ---------- back to top ---------- */
   const toTop = $('#to-top');
