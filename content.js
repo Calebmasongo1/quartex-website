@@ -60,6 +60,13 @@ window.QUARTEX_CONTENT = {
         'ICT, procurement and internal control reviews, with follow-up audits'
       ],
       outcome: 'A signed opinion, a management letter that names the weaknesses, and a follow-up plan.',
+      /* What the client receives: concrete deliverables, from the company profile. */
+      deliverables: [
+        'Signed auditor’s report with an independent opinion',
+        'Management letter on control weaknesses, with recommendations',
+        'A report you can file with KRA, SASRA, a donor or the PBO Regulatory Authority',
+        'Follow-up on the actions management agrees'
+      ],
       need: 'audit',
       image: 'audit-review',
       imageAlt: 'Professionals reviewing printed financial charts at a desk',
@@ -91,6 +98,13 @@ window.QUARTEX_CONTENT = {
         'Tax planning, restructuring, transaction and cross-border advice'
       ],
       outcome: 'Returns that reconcile to the books, a clean iTax ledger and a documented position for every filing.',
+      /* What the client receives: concrete deliverables, from the company profile. */
+      deliverables: [
+        'Returns filed on iTax by the statutory dates',
+        'Your iTax ledger reconciled to your books',
+        'Help applying for your tax compliance certificate',
+        'Written objections and responses when KRA sends a notice'
+      ],
       need: 'kra',
       image: 'tax-review',
       imageAlt: 'Financial records being reviewed with a calculator and notebook',
@@ -121,6 +135,13 @@ window.QUARTEX_CONTENT = {
         'Accounting software implementation and migration'
       ],
       outcome: 'A month-end close you can rely on, and financial information that supports control and planning.',
+      /* What the client receives: concrete deliverables, from the company profile. */
+      deliverables: [
+        'Reconciled ledgers, bank and M-Pesa included',
+        'Monthly management accounts with variance analysis',
+        'Payslips and payroll reports, with statutory deductions remitted',
+        'Year-end financial statements under IFRS or IFRS for SMEs'
+      ],
       need: 'monthly',
       image: 'accounting-systems',
       imageAlt: 'Professional reviewing financial data on a laptop',
@@ -149,6 +170,13 @@ window.QUARTEX_CONTENT = {
         'Business registration, permits, licensing and company restructuring'
       ],
       outcome: 'Clear responsibilities, a compliance calendar that is kept, and records that stand up to inspection.',
+      /* What the client receives: concrete deliverables, from the company profile. */
+      deliverables: [
+        'A compliance calendar with owners and dates',
+        'Board and internal audit charters',
+        'Finance, HR and procurement manuals and policies',
+        'Annual returns and statutory filings kept current'
+      ],
       need: 'controls',
       image: 'client-collaboration',
       imageAlt: 'Two professionals discussing information on a laptop',
@@ -177,6 +205,13 @@ window.QUARTEX_CONTENT = {
         'Fraud prevention frameworks and awareness'
       ],
       outcome: 'A practical view of your exposure and controls that are tested, documented and followed.',
+      /* What the client receives: concrete deliverables, from the company profile. */
+      deliverables: [
+        'A risk register with owners and planned responses',
+        'Documented controls, tested, with a remediation plan',
+        'Business continuity and crisis plans',
+        'A fraud prevention framework and staff awareness'
+      ],
       need: 'controls',
       image: 'audit-review',
       imageAlt: 'Professionals examining financial charts and taking notes',
@@ -205,6 +240,13 @@ window.QUARTEX_CONTENT = {
         'Performance management systems, KPIs and balanced scorecards'
       ],
       outcome: 'A clear basis for choosing between options, with the numbers to show a lender, an investor or a board.',
+      /* What the client receives: concrete deliverables, from the company profile. */
+      deliverables: [
+        'Financial models with scenarios you can test',
+        'Feasibility studies and valuation reports',
+        'Lender-ready financial packs',
+        'KPIs and a balanced scorecard to track the plan'
+      ],
       need: 'unsure',
       image: 'advisory-conversation',
       imageAlt: 'Two professionals reviewing a tablet during a conversation',
@@ -233,6 +275,13 @@ window.QUARTEX_CONTENT = {
         'Digital controls, access management and audit trails'
       ],
       outcome: 'A system your team can run, reconciled opening balances, and reports that answer management’s questions.',
+      /* What the client receives: concrete deliverables, from the company profile. */
+      deliverables: [
+        'An accounting or ERP system set up for how you work',
+        'Opening balances migrated and reconciled before sign-off',
+        'Power BI dashboards and automated reports',
+        'User access controls and audit trails'
+      ],
       need: 'software',
       image: 'accounting-systems',
       imageAlt: 'Professional examining charts and financial data on a laptop',
@@ -261,6 +310,13 @@ window.QUARTEX_CONTENT = {
         'Leadership, communication and decision-making for finance teams'
       ],
       outcome: 'A team that understands its obligations and can run the month without waiting for the adviser.',
+      /* What the client receives: concrete deliverables, from the company profile. */
+      deliverables: [
+        'Sessions tailored to your team’s roles and procedures',
+        'Practical exercises built on your own processes',
+        'Board sessions on governance and risk',
+        'Training on your accounting software and digital tools'
+      ],
       need: 'training',
       image: 'training-workshop',
       imageAlt: 'Presenter discussing charts with a group at a meeting table',
@@ -271,6 +327,9 @@ window.QUARTEX_CONTENT = {
   audiences: [
     {
       id: 'smes',
+      label: 'Small or medium business', short: 'SMEs',
+      /* Practice areas where work for this kind of organisation usually starts (Services page selector). */
+      start: ['accounting-financial-management', 'taxation', 'risk-internal-controls'],
       title: 'Small and medium-sized enterprises',
       summary: 'Reliable books, tax filed on time and a monthly view of cash. We help SMEs manage their obligations, monitor cash flow and strengthen the controls behind everyday operations.',
       answersTo: 'KRA, your bank and the county licensing office.',
@@ -278,6 +337,9 @@ window.QUARTEX_CONTENT = {
     },
     {
       id: 'startups-entrepreneurs',
+      label: 'Start-up or entrepreneur', short: 'start-ups',
+      /* Practice areas where work for this kind of organisation usually starts (Services page selector). */
+      start: ['compliance-governance', 'digital-transformation', 'business-advisory'],
       title: 'Start-ups and entrepreneurs',
       summary: 'Registered and set up correctly, with nothing you do not need yet. We help emerging businesses put sound financial practices in place, understand their obligations and test viability as they grow.',
       answersTo: 'The Business Registration Service, KRA and your county, in that order.',
@@ -285,6 +347,9 @@ window.QUARTEX_CONTENT = {
     },
     {
       id: 'ngos-development',
+      label: 'NGO or development partner', short: 'NGOs',
+      /* Practice areas where work for this kind of organisation usually starts (Services page selector). */
+      start: ['audit-assurance', 'accounting-financial-management'],
       title: 'NGOs and development partners',
       summary: 'Grant-funded work carries specific reporting and accountability responsibilities. We provide financial management and assurance shaped around each donor agreement and the organisation’s operating environment.',
       answersTo: 'Donors and their auditors, the PBO Regulatory Authority and your board.',
@@ -292,6 +357,9 @@ window.QUARTEX_CONTENT = {
     },
     {
       id: 'saccos',
+      label: 'SACCO or member organisation', short: 'SACCOs',
+      /* Practice areas where work for this kind of organisation usually starts (Services page selector). */
+      start: ['accounting-financial-management', 'compliance-governance', 'audit-assurance'],
       title: 'SACCOs and member-based organisations',
       summary: 'Member resources call for transparent reporting and responsible stewardship. We strengthen control environments, governance practices and compliance processes for SACCOs and other member organisations.',
       answersTo: 'Members, SASRA for regulated SACCOs, and the Commissioner for Co-operative Development.',
@@ -299,6 +367,9 @@ window.QUARTEX_CONTENT = {
     },
     {
       id: 'corporates',
+      label: 'Corporate or established business', short: 'corporates',
+      /* Practice areas where work for this kind of organisation usually starts (Services page selector). */
+      start: ['audit-assurance', 'taxation', 'business-advisory'],
       title: 'Corporates and established businesses',
       summary: 'Established organisations need dependable information and oversight as they grow. We connect assurance, reporting, tax and advisory to strengthen accountability and inform decisions at board level.',
       answersTo: 'Shareholders, lenders, KRA, the Business Registration Service and your board.',
@@ -306,6 +377,9 @@ window.QUARTEX_CONTENT = {
     },
     {
       id: 'public-institutions',
+      label: 'Government or public body', short: 'public bodies',
+      /* Practice areas where work for this kind of organisation usually starts (Services page selector). */
+      start: ['audit-assurance', 'compliance-governance', 'accounting-financial-management'],
       title: 'Government and public-sector institutions',
       summary: 'Public institutions need clear evidence of accountability and effective use of resources. Our support covers assurance, compliance, performance and value-for-money reviews under the applicable public-sector frameworks.',
       answersTo: 'The Office of the Auditor-General, Public Finance Management requirements and oversight committees.',

@@ -94,7 +94,7 @@
   let index = null;
   function buildIndex() {
     const entries = [];
-    C.services.forEach(s => entries.push({ type: 'Service', title: s.title, text: [s.promise, s.description, s.bullets.join(' '), s.audience].join(' '), href: `services.html#service-${s.id}` }));
+    C.services.forEach(s => entries.push({ type: 'Service', title: s.title, text: [s.promise, s.description, s.bullets.join(' '), (s.deliverables || []).join(' '), s.audience].join(' '), href: `services.html#service-${s.id}` }));
     C.finder.forEach(f => entries.push({ type: 'Situation', title: f.title, text: [f.label, f.sub, f.steps.join(' '), f.know].join(' '), href: `index.html#need-${f.id}` }));
     (C.calculators || []).forEach(c => entries.push({ type: 'Calculator', title: /estimator|calculator/i.test(c.title) ? c.title : c.title + ' calculator', text: c.keywords, href: `tools.html#tool-${c.id}` }));
     C.deadlines.calendar.filter(r => !r.group).forEach(r => entries.push({ type: 'Deadline', title: r.what.split('. ')[0].replace(/\.$/, '') + ' (' + r.when + ')', text: r.what + ' ' + r.who, href: 'tools.html#deadlines' }));
@@ -326,7 +326,7 @@
         </section>
         <section class="sp-cards" aria-label="Who it is for, the outcome and the next step">
           <div class="sp-card"><h4>Who this is for</h4><div class="tags">${(s.tags || tags(s.audience)).map(t => `<span>${esc(t)}</span>`).join('')}</div></div>
-          <div class="sp-card peach"><h4>What you end up with</h4><p>${esc(s.outcome)}</p></div>
+          <div class="sp-card peach"><h4>What you receive</h4>${s.deliverables && s.deliverables.length ? `<ul class="deliv">${s.deliverables.map(d => `<li>${esc(d)}</li>`).join('')}</ul><p class="out">${esc(s.outcome)}</p>` : `<p>${esc(s.outcome)}</p>`}</div>
           <div class="sp-card navy"><h4>The next step</h4><p>${f ? esc(f.first) : 'Tell us what is going on and we will say what we would do first.'}</p><div class="sp-acts"><button class="btn btn-gold" type="button" data-need="${esc(s.need)}">Discuss this service</button><a class="btn btn-light" href="${waLink('I would like to talk about ' + s.title.toLowerCase() + '.')}" target="_blank" rel="noopener">${icon('chat')}WhatsApp</a></div></div>
         </section>
         <footer class="sp-foot">
@@ -357,16 +357,45 @@
       e.preventDefault(); selectService(a.getAttribute('href').slice(9), { scroll: true });
     });
     window.addEventListener('hashchange', () => { const m = hashOf().match(/^service-(.+)$/); if (m && m[1] !== currentSvc) selectService(m[1], { scroll: true, push: false }); });
+
+    /* "Start from who you are": marks the practice areas where work for that kind of
+       organisation usually starts and says what comes first. Nothing is hidden. */
+    const whoSel = $('#svc-who'), whoNote = $('#svc-who-note');
+    function applyWho(id, { open = true } = {}) {
+      const a = C.audiences.find(x => x.id === id) || null;
+      const start = a && a.start ? a.start : [];
+      if (whoSel.value !== (a ? a.id : '')) whoSel.value = a ? a.id : '';
+      $$('#svc-index button').forEach(b => { if (start.includes(b.dataset.svc)) b.dataset.start = 'true'; else delete b.dataset.start; });
+      try { if (a) localStorage.setItem('qx-who', a.id); else localStorage.removeItem('qx-who'); } catch (e) { /* the choice just is not remembered */ }
+      if (!a) { whoNote.hidden = true; whoNote.innerHTML = ''; return; }
+      const areas = start.filter(sid => svcById[sid]).map(sid => `<button type="button" data-svc-go="${esc(sid)}">${esc(svcById[sid].shortTitle)}</button>`).join('');
+      whoNote.innerHTML = `<div class="who-head"><p><b>For ${esc(a.short)}</b>, work usually starts with</p><button class="who-clear" type="button">Clear</button></div><ul>${a.focus.map(f => `<li>${esc(f)}</li>`).join('')}</ul><div class="who-acts"><p class="who-areas"><span>Start here</span>${areas}</p><a class="textlink" href="#who" data-aud="${esc(a.id)}">How we work with ${esc(a.short)} ${icon('arrow')}</a></div>`;
+      whoNote.hidden = false;
+      if (open && start[0] && !phone()) selectService(start[0]);
+    }
+    if (whoSel && whoNote) {
+      whoSel.insertAdjacentHTML('beforeend', C.audiences.map(a => `<option value="${esc(a.id)}">${esc(a.label || a.title)}</option>`).join(''));
+      whoSel.addEventListener('change', () => applyWho(whoSel.value));
+      whoNote.addEventListener('click', e => {
+        if (e.target.closest('.who-clear')) { applyWho(''); whoSel.focus(); return; }
+        const go = e.target.closest('[data-svc-go]'); if (go) { selectService(go.dataset.svcGo, { scroll: phone() }); return; }
+        const more = e.target.closest('a[data-aud]');
+        if (more) { e.preventDefault(); const d = document.getElementById('aud-' + more.dataset.aud); if (d) { d.open = true; scrollTo(d, 'start'); } }
+      });
+      document.addEventListener('click', e => { const b = e.target.closest('[data-who-pick]'); if (!b) return; applyWho(b.dataset.whoPick); scrollTo(phone() ? $('#svc-index') : $('#service-list')); });
+      let saved = ''; try { saved = localStorage.getItem('qx-who') || ''; } catch (e) { /* no storage */ }
+      if (saved && C.audiences.some(a => a.id === saved)) applyWho(saved, { open: false });
+    }
     const m0 = hashOf().match(/^service-(.+)$/);
     selectService(m0 ? m0[1] : C.services[0].id, { scroll: !!m0, push: !!m0 });
   }
   if ($('#audiences')) {
     $('#audiences').innerHTML = C.audiences.map((a, i) => `
-      <details class="aud" name="audience"${i === 0 ? ' open' : ''}>
+      <details class="aud" id="aud-${esc(a.id)}" name="audience"${i === 0 ? ' open' : ''}>
         <summary>${esc(a.title)}${icon('plus-s')}</summary>
         <div class="body">
           <div><p>${esc(a.summary)}</p><p class="answers"><b>You answer to:</b> ${esc(a.answersTo)}</p></div>
-          <div><h4>Where we usually start</h4><ul>${a.focus.map(x => `<li>${esc(x)}</li>`).join('')}</ul></div>
+          <div><h4>Where we usually start</h4><ul>${a.focus.map(x => `<li>${esc(x)}</li>`).join('')}</ul>${a.start ? `<button class="textlink aud-pick" type="button" data-who-pick="${esc(a.id)}">Mark these on the practice areas ${icon('arrow')}</button>` : ''}</div>
         </div>
       </details>`).join('');
     const auds = $$('.aud');
