@@ -18,7 +18,7 @@ window.QUARTEX_CONTENT = {
     /* Public origin. Update before deploying to the live domain; it feeds the
        canonical, Open Graph and JSON-LD URLs. */
     siteUrl: 'https://quartexsynergy.com',
-    email: 'info@quartexsynergy.co.ke',
+    email: 'info@quartexsynergy.com',
     whatsapp: '254795019199',
     phones: ['+254 795 019 199', '+254 742 773 395', '+254 720 621 311'],
     location: 'Westlands, Nairobi, Kenya',
